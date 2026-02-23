@@ -45,14 +45,23 @@ public class KosAdapter extends RecyclerView.Adapter<KosAdapter.KosViewHolder> {
 
         Kos kos = kosList.get(position);
 
-        holder.tvIme.setText(kos.getIme());
+        // Nastavi naslov
+        holder.textViewNaziv.setText(kos.getIme());
 
         // URL slike
         String imageUrl = RetrofitClient.BASE_URL + "api/kosi/" + kos.getId();
 
         Glide.with(holder.itemView.getContext())
                 .load(imageUrl)
-                .into(holder.ivSlika);
+                .into(holder.imageViewKos);
+
+        // Prikaz ikone poškodbe
+        // Če imaš int (0 ali 1):
+        if (kos.isPoskodovano()) {
+            holder.imageViewPoskodba.setVisibility(View.VISIBLE);
+        } else {
+            holder.imageViewPoskodba.setVisibility(View.GONE);
+        }
 
         // Click event
         holder.itemView.setOnClickListener(v -> {
@@ -70,13 +79,16 @@ public class KosAdapter extends RecyclerView.Adapter<KosAdapter.KosViewHolder> {
     // ViewHolder
     public static class KosViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvIme;
-        ImageView ivSlika;
+        TextView textViewNaziv;
+        ImageView imageViewKos;
+        ImageView imageViewPoskodba;
 
         public KosViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvIme = itemView.findViewById(R.id.tvIme);
-            ivSlika = itemView.findViewById(R.id.ivSlika);
+
+            textViewNaziv = itemView.findViewById(R.id.textViewNaziv);
+            imageViewKos = itemView.findViewById(R.id.imageViewKos);
+            imageViewPoskodba = itemView.findViewById(R.id.imageViewPoskodba);
         }
     }
 }
