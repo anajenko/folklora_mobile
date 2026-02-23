@@ -1,13 +1,20 @@
 package si.uni_lj.fe.seminar.folkgarderoba;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<Kos> kosList = new ArrayList<>();
     private KosAdapter adapter;
+    private TextView selectedLabelsText;
+    private ArrayList<Integer> currentFilterIds = new ArrayList<>();
+    private ArrayList<String> currentFilterNazivi = new ArrayList<>();
+    private ActivityResultLauncher<Intent> filterLauncher;
+    private TextView filterTitleText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +63,32 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Prijavljen: " + username);
         }
 
+        filterTitleText = findViewById(R.id.filterTitleText);
+
+        // Filter UI
+        selectedLabelsText = findViewById(R.id.selectedLabelsText);
+        Button chooseFiltersButton = findViewById(R.id.chooseFiltersButton);
+
+        // Register result launcher
+        filterLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        currentFilterIds = result.getData()
+                                .getIntegerArrayListExtra("selectedLabelIds");
+                        currentFilterNazivi =
+                                result.getData().getStringArrayListExtra("selectedLabelNazivi");
+                        updateFilterText();
+                        loadKosi(currentFilterIds);
+                    }
+                }
+        );
+        chooseFiltersButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, FilterActivity.class);
+            intent.putIntegerArrayListExtra("selectedLabelIds", currentFilterIds);
+            filterLauncher.launch(intent);
+        });
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new KosAdapter(kosList, kos -> {
@@ -58,26 +96,49 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
 
-        loadKosi();
+        loadKosi(null);
+        updateFilterText();
     }
 
-    private void loadKosi() {
+    private void updateFilterText() {
+        if (currentFilterIds == null || currentFilterIds.isEmpty()) {
+            filterTitleText.setVisibility(View.GONE);
+            selectedLabelsText.setVisibility(View.GONE);
+        } else {
+            filterTitleText.setVisibility(View.VISIBLE);
+            selectedLabelsText.setVisibility(View.VISIBLE);
+
+            selectedLabelsText.setText(String.join(", ", currentFilterNazivi));
+        }
+    }
+
+    private void loadKosi(ArrayList<Integer> labelIds) {
         ApiService apiService = RetrofitClient
                 .getRetrofitInstance(this) // pošlji aktualni Context
                 .create(ApiService.class);
 
-        apiService.getKosi().enqueue(new Callback<List<Kos>>() {
+        Call<List<Kos>> call;
+
+        if (labelIds != null && !labelIds.isEmpty()) {
+            String labelsQuery = TextUtils.join(",", labelIds);
+            call = apiService.getKosiFiltered(labelsQuery);
+        } else {
+            call = apiService.getKosi();
+        }
+
+        call.enqueue(new Callback<List<Kos>>() {
             @Override
             public void onResponse(Call<List<Kos>> call, Response<List<Kos>> response) {
                 Log.d("MainActivity", "Response code: " + response.code());
+
                 if (response.isSuccessful() && response.body() != null) {
                     kosList.clear();
                     kosList.addAll(response.body());
                     adapter.notifyDataSetChanged();
                 } else {
-                    Log.e("MainActivity", "Napaka pri API: " + response.errorBody());
                     Toast.makeText(MainActivity.this,
-                            "Napaka pri nalaganju kosov", Toast.LENGTH_SHORT).show();
+                            "Napaka pri nalaganju kosov",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -85,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<List<Kos>> call, Throwable t) {
                 Log.e("MainActivity", "API ERROR", t);
                 Toast.makeText(MainActivity.this,
-                        "Napaka pri nalaganju kosov", Toast.LENGTH_SHORT).show();
+                        "Napaka pri nalaganju kosov",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -8,7 +8,9 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Kos;
+import si.uni_lj.fe.seminar.folkgarderoba.model.Labela;
 
 public interface ApiService {
 
@@ -18,8 +20,14 @@ public interface ApiService {
     @GET("api/kosi")
     Call<List<Kos>> getKosi();
 
+    @GET("api/kosi")
+    Call<List<Kos>> getKosiFiltered(@Query("labels") String labels);
+
     @GET("api/kosi/{id}")
     Call<ResponseBody> getSlika(@Path("id") int id);
+
+    @GET("api/labele")
+    Call<List<Labela>> getLabele();
 
 }
 

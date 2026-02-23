@@ -11,12 +11,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <LinearLayout
+        android:id="@+id/filterSection"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/filterTitleText"
+            android:text="@string/filtrirano_po"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/selectedLabelsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/vse"
+            android:paddingTop="4dp"/>
+
+        <Button
+            android:id="@+id/chooseFiltersButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/izberi_filtre"
+            android:paddingTop="8dp"/>
+    </LinearLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- kasneje bo RecyclerView grid tukaj -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
@@ -25,7 +53,7 @@
     </FrameLayout>
 
     <TextView
-        android:text="© Folklora APP"
+        android:text="@string/footer"
         android:gravity="center"
         android:background="#333333"
         android:textColor="#FFFFFF"
