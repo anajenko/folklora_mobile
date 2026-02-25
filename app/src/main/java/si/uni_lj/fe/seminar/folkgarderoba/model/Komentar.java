@@ -13,15 +13,19 @@ public class Komentar {
     @SerializedName("besedilo")
     private String besedilo;
 
-    public int getId() {
-        return id;
-    }
+    @SerializedName("uporabnik_id")
+    private int uporabnikId; // <-- ADD THIS
 
-    public int getKosId() {
-        return kosId;
-    }
+    @SerializedName("uporabnisko_ime")
+    private String uporabnisko_ime;
 
-    public String getBesedilo() {
-        return besedilo;
-    }
+    public int getId() { return id; }
+
+    public int getKosId() { return kosId; }
+
+    public String getBesedilo() { return besedilo; }
+
+    public int getUporabnikId() { return uporabnikId; } // <-- ADD THIS
+
+    public String getUporabnisko_ime() { return uporabnisko_ime; }
 }
