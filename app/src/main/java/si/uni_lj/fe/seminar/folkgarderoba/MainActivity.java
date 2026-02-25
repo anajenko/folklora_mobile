@@ -108,7 +108,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new KosAdapter(kosList, kos -> {
-            // tukaj bo kasneje DetailActivity
+            Intent intent = new Intent(MainActivity.this, KosDetailActivity.class);
+            intent.putExtra("kosId", kos.getId());
+            intent.putExtra("kosIme", kos.getIme());
+            intent.putExtra("poskodovano", kos.isPoskodovano());
+            startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
 
