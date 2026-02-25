@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> currentFilterNazivi = new ArrayList<>();
     private ActivityResultLauncher<Intent> filterLauncher;
     private TextView filterTitleText;
+    private Button clearFiltersButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         filterTitleText = findViewById(R.id.filterTitleText);
+        clearFiltersButton = findViewById(R.id.clearFiltersButton);
 
         // Filter UI
         selectedLabelsText = findViewById(R.id.selectedLabelsText);
-        Button chooseFiltersButton = findViewById(R.id.chooseFiltersButton);
 
         // Register result launcher
         filterLauncher = registerForActivityResult(
@@ -83,10 +85,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        Button chooseFiltersButton = findViewById(R.id.chooseFiltersButton);
         chooseFiltersButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, FilterActivity.class);
             intent.putIntegerArrayListExtra("selectedLabelIds", currentFilterIds);
             filterLauncher.launch(intent);
+        });
+
+        clearFiltersButton.setOnClickListener(v -> {
+            // Clear selected filters
+            currentFilterIds.clear();
+            currentFilterNazivi.clear();
+
+            // Update filter text + buttons
+            updateFilterText();
+
+            // Reload unfiltered list
+            loadKosi(null);
         });
 
         recyclerView = findViewById(R.id.recyclerView);
@@ -104,15 +120,18 @@ public class MainActivity extends AppCompatActivity {
         if (currentFilterIds == null || currentFilterIds.isEmpty()) {
             filterTitleText.setVisibility(View.GONE);
             selectedLabelsText.setVisibility(View.GONE);
+            clearFiltersButton.setVisibility(View.GONE);   // hide clear button
         } else {
             filterTitleText.setVisibility(View.VISIBLE);
             selectedLabelsText.setVisibility(View.VISIBLE);
-
+            clearFiltersButton.setVisibility(View.VISIBLE); // show clear button
             selectedLabelsText.setText(String.join(", ", currentFilterNazivi));
         }
     }
 
-    private void loadKosi(ArrayList<Integer> labelIds) {
+
+
+    private void loadKosi(@Nullable ArrayList<Integer> labelIds) {
         ApiService apiService = RetrofitClient
                 .getRetrofitInstance(this) // pošlji aktualni Context
                 .create(ApiService.class);

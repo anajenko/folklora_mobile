@@ -32,12 +32,27 @@
             android:text="@string/vse"
             android:paddingTop="4dp"/>
 
-        <Button
-            android:id="@+id/chooseFiltersButton"
+        <LinearLayout
+            android:id="@+id/filterButtonsLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/izberi_filtre"
-            android:paddingTop="8dp"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/chooseFiltersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Izberi filtre" />
+
+            <Button
+                android:id="@+id/clearFiltersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Počisti filtre"
+                android:visibility="gone"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
     </LinearLayout>
 
     <FrameLayout
