@@ -60,7 +60,6 @@ public class KosDetailActivity extends AppCompatActivity {
                 .getRetrofitInstance(this)
                 .create(ApiService.class);
 
-        // 📦 Dobimo podatke iz MainActivity
         kosId = getIntent().getIntExtra("kosId", -1);
         String kosIme = getIntent().getStringExtra("kosIme");
         boolean poskodovano = getIntent().getBooleanExtra("poskodovano", false);
@@ -71,16 +70,11 @@ public class KosDetailActivity extends AppCompatActivity {
             poskodovanoText.setVisibility(View.VISIBLE);
         }
 
-        // 🖼 Slika
         String imageUrl = RetrofitClient.BASE_URL + "api/kosi/" + kosId;
         Glide.with(this).load(imageUrl).into(imageView);
 
         loadLabele();
         loadKomentarji();
-
-        addCommentButton.setOnClickListener(v -> {
-            // kasneje AddCommentActivity
-        });
     }
 
     private void loadLabele() {
@@ -100,24 +94,24 @@ public class KosDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Labela>> call, Throwable t) { }
+            public void onFailure(Call<List<Labela>> call, Throwable t) {
+                Log.e("LABEL_ERROR", t.getMessage());
+            }
         });
     }
 
     private void loadKomentarji() {
-        SharedPreferences prefs = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
-        String currentUsername = prefs.getString("username", null);
 
         apiService.getKomentarjiZaKos(kosId).enqueue(new Callback<List<Komentar>>() {
             @Override
             public void onResponse(Call<List<Komentar>> call, Response<List<Komentar>> response) {
+
                 if (response.isSuccessful() && response.body() != null) {
 
                     commentsContainer.removeAllViews();
 
                     for (Komentar komentar : response.body()) {
 
-                        // Horizontal layout for single comment
                         LinearLayout commentLayout = new LinearLayout(KosDetailActivity.this);
                         commentLayout.setOrientation(LinearLayout.HORIZONTAL);
                         commentLayout.setPadding(0, 8, 0, 8);
@@ -126,121 +120,111 @@ public class KosDetailActivity extends AppCompatActivity {
                                 LinearLayout.LayoutParams.WRAP_CONTENT
                         ));
 
-                        // Comment text
                         TextView commentTv = new TextView(KosDetailActivity.this);
                         commentTv.setText(komentar.getUporabnisko_ime() + ": " + komentar.getBesedilo());
                         commentTv.setLayoutParams(new LinearLayout.LayoutParams(
                                 0,
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                                1f  // take remaining space
+                                1f
                         ));
                         commentLayout.addView(commentTv);
 
-                        // Only for logged-in user
                         if (komentar.getUporabnisko_ime().equals(currentUsername)) {
 
-                            // Delete button
+                            // DELETE
                             Button deleteBtn = new Button(KosDetailActivity.this);
                             deleteBtn.setText("X");
-                            deleteBtn.setOnClickListener(v -> deleteKomentar(komentar.getId(), commentLayout));
+                            deleteBtn.setOnClickListener(v ->
+                                    deleteKomentar(komentar.getId()));
                             commentLayout.addView(deleteBtn);
 
-                            // Edit button
+                            // EDIT
                             Button editBtn = new Button(KosDetailActivity.this);
                             editBtn.setText("Edit");
-                            editBtn.setOnClickListener(v -> enterEditMode(commentLayout, commentTv, komentar));
+                            editBtn.setOnClickListener(v ->
+                                    enterEditMode(komentar));
                             commentLayout.addView(editBtn);
                         }
 
-                        // Add the whole comment row to the vertical container
                         commentsContainer.addView(commentLayout);
                     }
+                } else {
+                    Log.e("COMMENT_ERROR", "Code: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Komentar>> call, Throwable t) { }
+            public void onFailure(Call<List<Komentar>> call, Throwable t) {
+                Log.e("COMMENT_ERROR", t.getMessage());
+            }
         });
     }
 
-    private void deleteKomentar(int komentarId, LinearLayout commentLayout) {
+    private void deleteKomentar(int komentarId) {
         apiService.deleteKomentar(komentarId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    // remove comment from UI
-                    commentsContainer.removeView(commentLayout);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) { }
-        });
-    }
-
-    private void enterEditMode(LinearLayout commentLayout, TextView commentTv, Komentar komentar) {
-
-        commentLayout.removeView(commentTv);
-
-        // Input field
-        EditText editText = new EditText(this);
-        editText.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        editText.setText(komentar.getBesedilo());
-        commentLayout.addView(editText, 0);
-
-        // Remove old Edit button
-        Button oldEditBtn = (Button) commentLayout.getChildAt(2); // assuming delete button at index 1, edit at index 2
-        commentLayout.removeView(oldEditBtn);
-
-        // Add "Popravi komentar" button
-        Button saveBtn = new Button(this);
-        saveBtn.setText("Popravi komentar");
-        saveBtn.setOnClickListener(v -> {
-            String updatedText = editText.getText().toString().trim();
-            if (!updatedText.isEmpty()) {
-                updateKomentar(komentar, updatedText, commentLayout, editText, saveBtn, commentTv);
-            }
-        });
-        commentLayout.addView(saveBtn);
-    }
-
-    private void updateKomentar(Komentar komentar, String updatedText, LinearLayout commentLayout,
-                                EditText editText, Button saveBtn, TextView commentTv) {
-
-        KomentarUpdateRequest request = new KomentarUpdateRequest(updatedText, kosId);
-
-        apiService.updateKomentar(komentar.getId(), request).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    // Update TextView
-                    commentTv.setText(komentar.getUporabnisko_ime() + ": " + updatedText);
-
-                    // Remove EditText and Save button
-                    commentLayout.removeView(editText);
-                    commentLayout.removeView(saveBtn);
-
-                    // Add back TextView
-                    commentLayout.addView(commentTv, 0);
-
-                    // Restore Edit button
-                    Button editBtn = new Button(KosDetailActivity.this);
-                    editBtn.setText("Edit");
-                    editBtn.setOnClickListener(v -> enterEditMode(commentLayout, commentTv, komentar));
-                    commentLayout.addView(editBtn);
-
-                } else {
-                    // Handle failure
+                    loadKomentarji();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                // Handle failure
+                Log.e("DELETE_ERROR", t.getMessage());
             }
         });
     }
+
+    private void enterEditMode(Komentar komentar) {
+
+        commentsContainer.removeAllViews();
+
+        LinearLayout editLayout = new LinearLayout(this);
+        editLayout.setOrientation(LinearLayout.VERTICAL);
+
+        EditText editText = new EditText(this);
+        editText.setText(komentar.getBesedilo());
+        editLayout.addView(editText);
+
+        Button saveBtn = new Button(this);
+        saveBtn.setText("Popravi komentar");
+        editLayout.addView(saveBtn);
+
+        saveBtn.setOnClickListener(v -> {
+            String updatedText = editText.getText().toString().trim();
+            if (!updatedText.isEmpty()) {
+                updateKomentar(komentar.getId(), updatedText);
+            }
+        });
+
+        commentsContainer.addView(editLayout);
+    }
+
+    private void updateKomentar(int komentarId, String updatedText) {
+
+        KomentarUpdateRequest request =
+                new KomentarUpdateRequest(updatedText, kosId);
+
+        apiService.updateKomentar(komentarId, request)
+                .enqueue(new Callback<Void>() {
+
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            loadKomentarji();
+                        } else {
+                            Log.e("UPDATE_ERROR", "Code: " + response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.e("UPDATE_ERROR", t.getMessage());
+                    }
+                });
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();

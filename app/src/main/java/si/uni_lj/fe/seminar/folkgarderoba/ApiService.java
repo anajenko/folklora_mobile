@@ -32,8 +32,11 @@ public interface ApiService {
     @GET("api/labele/kos/{id}")
     Call<List<Labela>> getLabeleZaKos(@Path("id") int id);
 
+    @GET("api/komentarji/kos/{kosId}")
+    Call<List<Komentar>> getKomentarjiZaKos(@Path("kosId") int kosId);
+
     @GET("api/komentarji/{id}")
-    Call<List<Komentar>> getKomentarjiZaKos(@Path("id") int id);
+    Call<Komentar> getKomentar(@Path("id") int id);
 
     @PUT("api/komentarji/{id}")
     Call<Void> updateKomentar(@Path("id") int id, @Body KomentarUpdateRequest request);

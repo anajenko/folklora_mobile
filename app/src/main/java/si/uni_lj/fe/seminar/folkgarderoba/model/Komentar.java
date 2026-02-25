@@ -28,4 +28,8 @@ public class Komentar {
     public int getUporabnikId() { return uporabnikId; } // <-- ADD THIS
 
     public String getUporabnisko_ime() { return uporabnisko_ime; }
+
+    public void setBesedilo(String besedilo) {
+        this.besedilo = besedilo;
+    }
 }
