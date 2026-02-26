@@ -161,7 +161,7 @@ public class KosDetailActivity extends AppCompatActivity {
     }
 
     private void deleteKomentar(int komentarId) {
-        apiService.deleteKomentar(komentarId).enqueue(new Callback<Void>() {
+        apiService.deleteKomentar(kosId, komentarId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -206,7 +206,7 @@ public class KosDetailActivity extends AppCompatActivity {
         KomentarUpdateRequest request =
                 new KomentarUpdateRequest(updatedText, kosId);
 
-        apiService.updateKomentar(komentarId, request)
+        apiService.updateKomentar(kosId, komentarId, request)
                 .enqueue(new Callback<Void>() {
 
                     @Override

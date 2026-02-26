@@ -32,20 +32,39 @@ public interface ApiService {
     @GET("api/labele/kos/{id}")
     Call<List<Labela>> getLabeleZaKos(@Path("id") int id);
 
-    @GET("api/komentarji/kos/{kosId}")
-    Call<List<Komentar>> getKomentarjiZaKos(@Path("kosId") int kosId);
-
-    @GET("api/komentarji/{id}")
-    Call<Komentar> getKomentar(@Path("id") int id);
-
-    @PUT("api/komentarji/{id}")
-    Call<Void> updateKomentar(@Path("id") int id, @Body KomentarUpdateRequest request);
-
-    @DELETE("api/komentarji/{id}")
-    Call<Void> deleteKomentar(@Path("id") int id);
-
     @GET("api/labele")
     Call<List<Labela>> getLabele();
+
+    // KOMENTARJI:
+    @GET("api/kosi/{kosId}/komentarji")
+    Call<List<Komentar>> getKomentarjiZaKos(@Path("kosId") int kosId);
+
+    @GET("api/kosi/{kosId}/komentarji/{id}")
+    Call<Komentar> getKomentar(
+            @Path("kosId") int kosId,
+            @Path("id") int id
+    );
+
+    @PUT("api/kosi/{kosId}/komentarji/{id}")
+    Call<Void> updateKomentar(
+            @Path("kosId") int kosId,
+            @Path("id") int id,
+            @Body KomentarUpdateRequest request
+    );
+
+    @DELETE("api/kosi/{kosId}/komentarji/{id}")
+    Call<Void> deleteKomentar(
+            @Path("kosId") int kosId,
+            @Path("id") int id
+    );
+
+    @POST("api/kosi/{kosId}/komentarji")
+    Call<Void> addKomentar(
+            @Path("kosId") int kosId,
+            @Body KomentarUpdateRequest request
+    );
+
+
 
 }
 
