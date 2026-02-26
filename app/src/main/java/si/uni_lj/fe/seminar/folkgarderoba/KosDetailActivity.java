@@ -33,6 +33,7 @@ public class KosDetailActivity extends AppCompatActivity {
     private ApiService apiService;
     private int kosId;
     private String currentUsername;
+    private EditText newCommentEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,16 @@ public class KosDetailActivity extends AppCompatActivity {
         labelsContainer = findViewById(R.id.labelsContainer);
         commentsContainer = findViewById(R.id.commentsContainer);
         Button addCommentButton = findViewById(R.id.addCommentButton);
+        newCommentEditText = findViewById(R.id.newCommentEditText);
+
+        addCommentButton.setOnClickListener(v -> {
+            String komentarText = newCommentEditText.getText().toString().trim();
+            if (komentarText.isEmpty()) {
+                newCommentEditText.setError("Komentar ne sme biti prazen");
+                return;
+            }
+            addKomentar(komentarText);
+        });
 
         apiService = RetrofitClient
                 .getRetrofitInstance(this)
@@ -160,6 +171,28 @@ public class KosDetailActivity extends AppCompatActivity {
         });
     }
 
+    private void addKomentar(String komentarText) {
+
+        // Call backend
+        apiService.addKomentar(kosId, new si.uni_lj.fe.seminar.folkgarderoba.model.KomentarCreateRequest(komentarText))
+                .enqueue(new Callback<Void>() { // we just reload, backend returns message/url, we ignore
+
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            newCommentEditText.setText(""); // clear field
+                            loadKomentarji(); // reload comments
+                        } else {
+                            Log.e("ADD_COMMENT_ERROR", "Code: " + response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.e("ADD_COMMENT_ERROR", t.getMessage());
+                    }
+                });
+    }
     private void deleteKomentar(int komentarId) {
         apiService.deleteKomentar(kosId, komentarId).enqueue(new Callback<Void>() {
             @Override

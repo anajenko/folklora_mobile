@@ -65,6 +65,7 @@
                 android:orientation="vertical" />
 
             <!-- Komentarji -->
+            <!-- Komentarji -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,18 +73,32 @@
                 android:text="Komentarji"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:id="@+id/commentsContainer"
+            <!-- New comment input -->
+            <EditText
+                android:id="@+id/newCommentEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:hint="Vnesi komentar..."
+                android:inputType="textMultiLine"
+                android:minLines="1"
+                android:maxLines="3"
+                android:layout_marginTop="8dp"
+                android:padding="8dp"
+                android:background="@android:drawable/edit_text" />
 
             <Button
                 android:id="@+id/addCommentButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Dodaj komentar" />
+
+            <LinearLayout
+                android:id="@+id/commentsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp" />
 
         </LinearLayout>
     </ScrollView>

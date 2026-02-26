@@ -12,6 +12,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Komentar;
+import si.uni_lj.fe.seminar.folkgarderoba.model.KomentarCreateRequest;
 import si.uni_lj.fe.seminar.folkgarderoba.model.KomentarUpdateRequest;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Kos;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Labela;
@@ -59,12 +60,7 @@ public interface ApiService {
     );
 
     @POST("api/kosi/{kosId}/komentarji")
-    Call<Void> addKomentar(
-            @Path("kosId") int kosId,
-            @Body KomentarUpdateRequest request
-    );
-
-
+    Call<Void> addKomentar(@Path("kosId") int kosId, @Body KomentarCreateRequest request);
 
 }
 
