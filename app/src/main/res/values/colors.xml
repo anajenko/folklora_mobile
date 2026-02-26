@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="poskodovano_bg">#dddddd</color>
+    <color name="poskodovano_border">#4e4e4e76</color>
+    <color name="app_background">#f7e9e9</color> <!-- light pinkish -->
+    <color name="labele">#fd838997</color>
+    <color name="kajeto">#8f3c41</color>
+    <color name="headerfooter">#333</color>
 </resources>

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
@@ -55,12 +56,22 @@ public class KosAdapter extends RecyclerView.Adapter<KosAdapter.KosViewHolder> {
                 .load(imageUrl)
                 .into(holder.imageViewKos);
 
+        MaterialCardView card = (MaterialCardView) holder.itemView;
         // Prikaz ikone poškodbe
         // Če imaš int (0 ali 1):
         if (kos.isPoskodovano()) {
             holder.imageViewPoskodba.setVisibility(View.VISIBLE);
+            // Set background color while keeping rounded corners
+            card.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.poskodovano_bg));
+
+            // Set border (stroke)
+            card.setStrokeWidth(4);
+            card.setStrokeColor(holder.itemView.getContext().getResources().getColor(R.color.poskodovano_border));
         } else {
             holder.imageViewPoskodba.setVisibility(View.GONE);
+            // Reset to default card background and remove border
+            card.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(android.R.color.white));
+            card.setStrokeWidth(0);
         }
 
         // Click event
