@@ -1,15 +1,26 @@
 package si.uni_lj.fe.seminar.folkgarderoba;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +32,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,9 +73,78 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ImageView menuButton = findViewById(R.id.menuButton);
+
+        menuButton.setOnClickListener(v -> {
+            // Inflate a custom layout
+            LinearLayout layout = new LinearLayout(MainActivity.this);
+            layout.setOrientation(LinearLayout.HORIZONTAL);
+            layout.setPadding(24, 24, 24, 24);
+            layout.setGravity(Gravity.CENTER_VERTICAL);
+            layout.setBackgroundColor(Color.parseColor("#333333")); // dark background
+
+            // Username TextView
+            TextView usernameTv = new TextView(MainActivity.this);
+            usernameTv.setTextColor(Color.WHITE);
+            usernameTv.setTextSize(16);
+            usernameTv.setText(prefs.getString("username", ""));
+
+            // Create LayoutParams with margins
+            LinearLayout.LayoutParams usernameParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+
+            // Set left margin in dp (e.g., 16dp)
+            int leftMarginDp = 13;
+            usernameParams.leftMargin = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    leftMarginDp,
+                    getResources().getDisplayMetrics()
+            );
+            usernameTv.setLayoutParams(usernameParams);
+            layout.addView(usernameTv);
+
+            // Logout icon
+            ImageView logoutIcon = new ImageView(MainActivity.this);
+            logoutIcon.setImageResource(R.drawable.logout); // your icon
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()),
+                    (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics())
+            );
+            params.leftMargin = 30;
+            params.rightMargin = 17;
+            params.topMargin = 15;
+            params.bottomMargin = 15;
+            logoutIcon.setLayoutParams(params);
+            layout.addView(logoutIcon);
+
+            // Create popup window
+            PopupWindow popup = new PopupWindow(layout,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    true); // focusable
+
+            // Add shadow and elevation
+            popup.setElevation(8);
+            popup.setOutsideTouchable(true);
+            popup.setBackgroundDrawable(getDrawable(R.drawable.popup_bg)); // rounded dark background
+
+            // Show popup below button
+            popup.showAsDropDown(v, 0, 10); // x-offset=0, y-offset=10
+
+            // Handle click
+            layout.setOnClickListener(ll -> {
+                prefs.edit().clear().apply();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+                popup.dismiss();
+            });
+        });
+
         String username = prefs.getString("username", "");
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Prijavljen: " + username);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         filterTitleText = findViewById(R.id.filterTitleText);
@@ -175,21 +257,32 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("Odjava");
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        SharedPreferences prefs = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
+        String username = prefs.getString("username", "");
+
+        MenuItem userItem = menu.findItem(R.id.menu_user);
+        userItem.setTitle("Uporabnik: " + username);
+
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if ("Odjava".equals(item.getTitle())) {
+
+        if (item.getItemId() == R.id.menu_logout) {
+
             SharedPreferences prefs = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
             prefs.edit().clear().apply();
 
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+            return true;
         }
-        return true;
+
+        return super.onOptionsItemSelected(item);
     }
 }
