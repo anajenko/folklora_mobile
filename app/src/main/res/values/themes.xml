@@ -16,5 +16,9 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="BadgeText">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 
 </resources>

@@ -1,5 +1,7 @@
 package si.uni_lj.fe.seminar.folkgarderoba.adapter;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
+import si.uni_lj.fe.seminar.folkgarderoba.ApiService;
 import si.uni_lj.fe.seminar.folkgarderoba.R;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Kos;
 import si.uni_lj.fe.seminar.folkgarderoba.RetrofitClient;
@@ -73,8 +76,6 @@ public class KosAdapter extends RecyclerView.Adapter<KosAdapter.KosViewHolder> {
             card.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(android.R.color.white));
             card.setStrokeWidth(0);
         }
-
-        // Click event
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(kos);

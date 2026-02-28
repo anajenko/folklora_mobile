@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="headerfooter">#333</color>
+    <color name="app_background">#f7e9e9</color>
+    <color name="gumbi">#b05055</color>
+    <color name="gumbi_hover">#8f3c41</color>
+    <color name="sidebar_web">#fafafa</color>
+    <color name="labele">#97FD8389</color>
+    <color name="siva">#f3f3f3</color>
+    <color name="siva_hover">#ddd</color>
+
     <color name="poskodovano_bg">#dddddd</color>
     <color name="poskodovano_border">#4e4e4e76</color>
-    <color name="app_background">#f7e9e9</color> <!-- light pinkish -->
-    <color name="labele">#fd838997</color>
-    <color name="kajeto">#8f3c41</color>
-    <color name="headerfooter">#333</color>
 </resources>

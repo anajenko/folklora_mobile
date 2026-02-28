@@ -1,9 +1,12 @@
 package si.uni_lj.fe.seminar.folkgarderoba;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.List;
 
@@ -28,12 +32,16 @@ public class KosDetailActivity extends AppCompatActivity {
 
     private TextView titleText, poskodovanoText;
     private ImageView imageView;
-    private LinearLayout labelsContainer, commentsContainer;
+    private LinearLayout commentsContainer;
+
+    private FlexboxLayout labelsContainer;
 
     private ApiService apiService;
     private int kosId;
     private String currentUsername;
     private EditText newCommentEditText;
+
+    private TextView labelsTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,7 @@ public class KosDetailActivity extends AppCompatActivity {
         commentsContainer = findViewById(R.id.commentsContainer);
         Button addCommentButton = findViewById(R.id.addCommentButton);
         newCommentEditText = findViewById(R.id.newCommentEditText);
+        labelsTitle = findViewById(R.id.labelsTitle);
 
         addCommentButton.setOnClickListener(v -> {
             String komentarText = newCommentEditText.getText().toString().trim();
@@ -86,6 +95,12 @@ public class KosDetailActivity extends AppCompatActivity {
 
         loadLabele();
         loadKomentarji();
+
+        ApiService apiService = RetrofitClient
+                .getRetrofitInstance(this)
+                .create(ApiService.class);
+
+
     }
 
     private void loadLabele() {
@@ -94,19 +109,55 @@ public class KosDetailActivity extends AppCompatActivity {
             public void onResponse(Call<List<Labela>> call, Response<List<Labela>> response) {
                 if (response.isSuccessful() && response.body() != null) {
 
+                    List<Labela> labels = response.body();
+
+                    // Hide if no labels
+                    if (labels.isEmpty()) {
+                        labelsTitle.setVisibility(View.GONE);
+                        labelsContainer.setVisibility(View.GONE);
+                        return;
+                    }
+
+                    labelsTitle.setVisibility(View.VISIBLE);
+                    labelsContainer.setVisibility(View.VISIBLE);
+
+                    // Clear any previous badges
                     labelsContainer.removeAllViews();
 
-                    for (Labela label : response.body()) {
-                        TextView tv = new TextView(KosDetailActivity.this);
-                        tv.setText(label.getNaziv());
-                        labelsContainer.addView(tv);
+                    for (Labela label : labels) {
+
+                        // Create badge
+                        TextView badge = new TextView(new ContextThemeWrapper(
+                                KosDetailActivity.this, android.R.style.Widget_Material_TextView
+                        ));
+                        badge.setText(label.getNaziv());
+                        badge.setTextSize(14); // bigger text
+
+                        badge.setPadding(24, 10, 24, 10);
+                        badge.setBackgroundResource(R.drawable.label_badge_bg);
+
+                        FlexboxLayout.LayoutParams params =
+                                new FlexboxLayout.LayoutParams(
+                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT
+                                );
+                        params.setMargins(4, 4, 4, 4); // badges closer together
+                        badge.setLayoutParams(params);
+
+                        labelsContainer.addView(badge);
                     }
+                } else {
+                    // No labels
+                    labelsTitle.setVisibility(View.GONE);
+                    labelsContainer.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<List<Labela>> call, Throwable t) {
                 Log.e("LABEL_ERROR", t.getMessage());
+                labelsTitle.setVisibility(View.GONE);
+                labelsContainer.setVisibility(View.GONE);
             }
         });
     }
