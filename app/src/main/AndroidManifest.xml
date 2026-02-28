@@ -16,7 +16,8 @@
         android:theme="@style/Theme.FolkGarderoba">
 
 
-        <activity android:name=".KosDetailActivity" />
+        <activity android:name=".KosDetailActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".FilterActivity" />
         <activity android:name=".MainActivity"
             android:exported="false"/>

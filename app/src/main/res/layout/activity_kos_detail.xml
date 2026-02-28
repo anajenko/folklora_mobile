@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/app_background">
+    android:background="@color/app_background"
+    android:fitsSystemWindows="true">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -17,9 +16,12 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         android:paddingTop="35dp" />
 
+    <!-- ScrollView fixed: height=0dp + weight=1 + fillViewport -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
