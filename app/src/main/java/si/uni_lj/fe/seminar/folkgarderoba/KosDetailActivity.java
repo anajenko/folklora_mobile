@@ -2,11 +2,14 @@ package si.uni_lj.fe.seminar.folkgarderoba;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -56,6 +59,7 @@ public class KosDetailActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Podrobnosti kosa");
         }
 
         titleText = findViewById(R.id.detailTitle);
@@ -99,8 +103,6 @@ public class KosDetailActivity extends AppCompatActivity {
         ApiService apiService = RetrofitClient
                 .getRetrofitInstance(this)
                 .create(ApiService.class);
-
-
     }
 
     private void loadLabele() {
@@ -313,5 +315,22 @@ public class KosDetailActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        View view = getCurrentFocus();
+        if (view instanceof EditText) {
+            Rect outRect = new Rect();
+            view.getGlobalVisibleRect(outRect);
+            if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+                view.clearFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

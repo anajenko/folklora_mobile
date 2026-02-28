@@ -11,6 +11,7 @@
     <color name="labele">#97FD8389</color>
     <color name="siva">#f3f3f3</color>
     <color name="siva_hover">#ddd</color>
+    <color name="temno_siva">#111111</color>
 
     <color name="poskodovano_bg">#dddddd</color>
     <color name="poskodovano_border">#4e4e4e76</color>
