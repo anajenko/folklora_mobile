@@ -2,6 +2,7 @@ package si.uni_lj.fe.seminar.folkgarderoba;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +88,6 @@ public class FilterActivity extends AppCompatActivity {
 
         // Group by tip
         Map<String, List<Labela>> grouped = new HashMap<>();
-
         for (Labela label : labels) {
             String tip = label.getTip();
             if (!grouped.containsKey(tip)) {
@@ -95,17 +96,41 @@ public class FilterActivity extends AppCompatActivity {
             grouped.get(tip).add(label);
         }
 
-        for (String tip : grouped.keySet()) {
+        // 2️⃣ Define the display order and nice names
+        Map<String, String> groupOrderMap = new LinkedHashMap<>();
+        groupOrderMap.put("POKRAJINA", "POKRAJINA");
+        groupOrderMap.put("TIP_OBLACILA", "TIP OBLAČILA");
+        groupOrderMap.put("SPOL", "SPOL");
+        groupOrderMap.put("VELIKOST", "VELIKOST");
+        groupOrderMap.put("DRUGO", "DRUGO");
+
+        Map<String, String> backendToDisplayKey = new HashMap<>();
+        for (String key : groupOrderMap.keySet()) {
+            backendToDisplayKey.put(key.toLowerCase(), key); // lowercase matching
+        }
+
+        for (Map.Entry<String, String> entry : groupOrderMap.entrySet()) {
+            String key = entry.getKey();       // e.g., "TIP_OBLACILA"
+            String displayName = entry.getValue(); // e.g., "TIP OBLAČILA"
+
+            String backendTip = null;
+            for (String tip : grouped.keySet()) {
+                if (tip.equalsIgnoreCase(key)) {
+                    backendTip = tip;
+                    break;
+                }
+            }
 
             // Section title
             TextView typeText = new TextView(this);
-            typeText.setText(tip);
+            typeText.setText(displayName.toUpperCase());
             typeText.setTextSize(16);
-            typeText.setPadding(0, 24, 0, 8);
+            typeText.setPadding(0, 32, 0, 8);
+            typeText.setTypeface(null, Typeface.BOLD);
             labelsContainer.addView(typeText);
 
             // Checkboxes
-            for (Labela label : grouped.get(tip)) {
+            for (Labela label : grouped.get(backendTip)) {
 
                 CheckBox cb = new CheckBox(this);
                 cb.setText(label.getNaziv());   // <-- naziv, not ime
