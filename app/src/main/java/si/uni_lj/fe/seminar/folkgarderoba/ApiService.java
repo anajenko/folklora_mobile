@@ -15,6 +15,7 @@ import si.uni_lj.fe.seminar.folkgarderoba.model.Komentar;
 import si.uni_lj.fe.seminar.folkgarderoba.model.KomentarCreateRequest;
 import si.uni_lj.fe.seminar.folkgarderoba.model.KomentarUpdateRequest;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Kos;
+import si.uni_lj.fe.seminar.folkgarderoba.model.KosUpdateRequest;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Labela;
 
 public interface ApiService {
@@ -30,6 +31,11 @@ public interface ApiService {
 
     @GET("api/kosi/{id}")
     Call<ResponseBody> getSlika(@Path("id") int id);
+
+    @PUT("api/kosi/{id}")
+    Call<Void> updatePoskodovano(@Path("id") int id,
+                                 @Body KosUpdateRequest request);
+
     @GET("api/labele/kos/{id}")
     Call<List<Labela>> getLabeleZaKos(@Path("id") int id);
 

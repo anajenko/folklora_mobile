@@ -53,16 +53,15 @@
                 android:scaleType="fitCenter" />
 
             <!-- POSKODOVANO -->
-            <TextView
-                android:id="@+id/poskodovanoText"
+            <Switch
+                android:id="@+id/poskodovanoSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="! POŠKODOVANO !"
+                android:text="POŠKODOVANO"
                 android:textColor="@android:color/holo_red_dark"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"
-                android:textSize="14dp"
                 android:visibility="gone" />
 
             <!-- Labele -->

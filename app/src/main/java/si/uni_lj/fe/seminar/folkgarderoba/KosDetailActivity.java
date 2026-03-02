@@ -1,6 +1,7 @@
 package si.uni_lj.fe.seminar.folkgarderoba;
 
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +27,9 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.flexbox.JustifyContent;
+import com.google.android.flexbox.AlignItems;
 import com.google.android.material.card.MaterialCardView;
 
 import java.lang.reflect.Field;
@@ -35,11 +40,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Komentar;
 import si.uni_lj.fe.seminar.folkgarderoba.model.KomentarUpdateRequest;
+import si.uni_lj.fe.seminar.folkgarderoba.model.KosUpdateRequest;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Labela;
 
 public class KosDetailActivity extends AppCompatActivity {
 
-    private TextView titleText, poskodovanoText;
+    private TextView titleText;
+    private Switch poskodovanoSwitch;
     private ImageView imageView;
     private LinearLayout commentsContainer;
 
@@ -49,6 +56,9 @@ public class KosDetailActivity extends AppCompatActivity {
     private int kosId;
     private String currentUsername;
     private EditText newCommentEditText;
+
+    private boolean isUpdatingSwitch = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,11 +102,14 @@ public class KosDetailActivity extends AppCompatActivity {
 
         titleText = findViewById(R.id.detailTitle);
         imageView = findViewById(R.id.detailImage);
-        poskodovanoText = findViewById(R.id.poskodovanoText);
+        poskodovanoSwitch = findViewById(R.id.poskodovanoSwitch);
         labelsContainer = findViewById(R.id.labelsContainer);
         commentsContainer = findViewById(R.id.commentsContainer);
         Button addCommentButton = findViewById(R.id.addCommentButton);
         newCommentEditText = findViewById(R.id.newCommentEditText);
+
+        labelsContainer.setJustifyContent(JustifyContent.CENTER);
+        labelsContainer.setAlignItems(AlignItems.CENTER);
 
         addCommentButton.setOnClickListener(v -> {
             String komentarText = newCommentEditText.getText().toString().trim();
@@ -117,11 +130,45 @@ public class KosDetailActivity extends AppCompatActivity {
 
         titleText.setText(kosIme);
 
-        if (poskodovano) {
-            poskodovanoText.setVisibility(View.VISIBLE);
-        } else {
-            poskodovanoText.setVisibility(View.GONE);
-        }
+        poskodovanoSwitch.setChecked(poskodovano);
+        updatePoskodovanoUI(poskodovano);
+        poskodovanoSwitch.setVisibility(View.VISIBLE);
+
+        poskodovanoSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if (isUpdatingSwitch) return;
+
+            updatePoskodovanoUI(isChecked);
+
+            // Optional: disable the switch temporarily to prevent double tap
+            KosUpdateRequest request = new KosUpdateRequest(isChecked);
+            // Call your API to update
+            apiService.updatePoskodovano(
+                    kosId,
+                    request
+            ).enqueue(new Callback<Void>() {
+
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+
+                    if (!response.isSuccessful()) {
+                        isUpdatingSwitch = true;
+                        // Failed — revert
+                        poskodovanoSwitch.setChecked(!isChecked);
+                        updatePoskodovanoUI(!isChecked);
+                        isUpdatingSwitch = false;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    isUpdatingSwitch = true;
+                    poskodovanoSwitch.setChecked(!isChecked);
+                    updatePoskodovanoUI(!isChecked);
+                    isUpdatingSwitch = false;
+                }
+            });
+        });
 
         String imageUrl = RetrofitClient.BASE_URL + "api/kosi/" + kosId;
         Glide.with(this).load(imageUrl).into(imageView);
@@ -424,6 +471,31 @@ public class KosDetailActivity extends AppCompatActivity {
                 updateKomentarWithCheck(komentar, komentar.getId(), updatedText, editText, commentTv, topRow, checkIcon, card);
             }
         });
+    }
+
+    private void updatePoskodovanoUI(boolean isPoskodovano) {
+        int activeColor = ContextCompat.getColor(this, R.color.gumbi);
+        int inactiveColor = ContextCompat.getColor(this, R.color.headerfooter);
+
+        int color = isPoskodovano ? activeColor : inactiveColor;
+
+
+        // Update text and style
+        if (isPoskodovano) {
+            poskodovanoSwitch.setText("JE POŠKODOVANO!");
+            poskodovanoSwitch.setTypeface(null, android.graphics.Typeface.BOLD);
+        } else {
+            poskodovanoSwitch.setText("ni poškodovano");
+            poskodovanoSwitch.setTypeface(null, android.graphics.Typeface.NORMAL);
+        }
+
+        // Update text color
+        poskodovanoSwitch.setTextColor(color);
+
+        // Update thumb + track color
+        ColorStateList colorStateList = ColorStateList.valueOf(color);
+        poskodovanoSwitch.setThumbTintList(colorStateList);
+        poskodovanoSwitch.setTrackTintList(colorStateList);
     }
 
     private void updateKomentar(int komentarId, String updatedText,
