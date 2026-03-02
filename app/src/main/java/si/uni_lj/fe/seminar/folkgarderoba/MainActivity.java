@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             );
 
             // Set left margin in dp (e.g., 16dp)
-            int leftMarginDp = 13;
+            int leftMarginDp = 16;
             usernameParams.leftMargin = (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
                     leftMarginDp,

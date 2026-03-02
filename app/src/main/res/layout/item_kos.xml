@@ -33,9 +33,9 @@
 
             <ImageView
                 android:id="@+id/imageViewPoskodba"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/needle"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:src="@drawable/sew"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

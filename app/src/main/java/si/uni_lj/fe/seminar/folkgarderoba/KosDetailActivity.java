@@ -44,8 +44,6 @@ public class KosDetailActivity extends AppCompatActivity {
     private String currentUsername;
     private EditText newCommentEditText;
 
-    private TextView labelsTitle;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +67,6 @@ public class KosDetailActivity extends AppCompatActivity {
         commentsContainer = findViewById(R.id.commentsContainer);
         Button addCommentButton = findViewById(R.id.addCommentButton);
         newCommentEditText = findViewById(R.id.newCommentEditText);
-        labelsTitle = findViewById(R.id.labelsTitle);
 
         addCommentButton.setOnClickListener(v -> {
             String komentarText = newCommentEditText.getText().toString().trim();
@@ -92,6 +89,8 @@ public class KosDetailActivity extends AppCompatActivity {
 
         if (poskodovano) {
             poskodovanoText.setVisibility(View.VISIBLE);
+        } else {
+            poskodovanoText.setVisibility(View.GONE);
         }
 
         String imageUrl = RetrofitClient.BASE_URL + "api/kosi/" + kosId;
@@ -115,12 +114,9 @@ public class KosDetailActivity extends AppCompatActivity {
 
                     // Hide if no labels
                     if (labels.isEmpty()) {
-                        labelsTitle.setVisibility(View.GONE);
                         labelsContainer.setVisibility(View.GONE);
                         return;
                     }
-
-                    labelsTitle.setVisibility(View.VISIBLE);
                     labelsContainer.setVisibility(View.VISIBLE);
 
                     // Clear any previous badges
@@ -149,8 +145,6 @@ public class KosDetailActivity extends AppCompatActivity {
                         labelsContainer.addView(badge);
                     }
                 } else {
-                    // No labels
-                    labelsTitle.setVisibility(View.GONE);
                     labelsContainer.setVisibility(View.GONE);
                 }
             }
@@ -158,14 +152,12 @@ public class KosDetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Labela>> call, Throwable t) {
                 Log.e("LABEL_ERROR", t.getMessage());
-                labelsTitle.setVisibility(View.GONE);
                 labelsContainer.setVisibility(View.GONE);
             }
         });
     }
 
     private void loadKomentarji() {
-
         apiService.getKomentarjiZaKos(kosId).enqueue(new Callback<List<Komentar>>() {
             @Override
             public void onResponse(Call<List<Komentar>> call, Response<List<Komentar>> response) {
@@ -176,42 +168,105 @@ public class KosDetailActivity extends AppCompatActivity {
 
                     for (Komentar komentar : response.body()) {
 
-                        LinearLayout commentLayout = new LinearLayout(KosDetailActivity.this);
-                        commentLayout.setOrientation(LinearLayout.HORIZONTAL);
-                        commentLayout.setPadding(0, 8, 0, 8);
-                        commentLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                        // --- CREATE CARD ---
+                        com.google.android.material.card.MaterialCardView card =
+                                new com.google.android.material.card.MaterialCardView(KosDetailActivity.this);
+
+                        LinearLayout.LayoutParams cardParams =
+                                new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                );
+                        cardParams.setMargins(0, 0, 0, 32);
+                        card.setLayoutParams(cardParams);
+
+                        card.setRadius(20f);
+                        card.setCardElevation(4f);
+
+                        // --- MAIN HORIZONTAL LAYOUT ---
+                        LinearLayout mainRow = new LinearLayout(KosDetailActivity.this);
+                        mainRow.setOrientation(LinearLayout.VERTICAL);
+                        mainRow.setPadding(24, 24, 24, 24);
+                        mainRow.setLayoutParams(new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT
                         ));
 
-                        TextView commentTv = new TextView(KosDetailActivity.this);
-                        commentTv.setText(komentar.getUporabnisko_ime() + ": " + komentar.getBesedilo());
-                        commentTv.setLayoutParams(new LinearLayout.LayoutParams(
-                                0,
-                                LinearLayout.LayoutParams.WRAP_CONTENT,
-                                1f
+
+
+                        // --- TOP ROW (USERNAME + ICONS) ---
+                        LinearLayout topRow = new LinearLayout(KosDetailActivity.this);
+                        topRow.setOrientation(LinearLayout.HORIZONTAL);
+                        topRow.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
                         ));
-                        commentLayout.addView(commentTv);
 
+                        // USERNAME
+                        TextView usernameTv = new TextView(KosDetailActivity.this);
+                        usernameTv.setText(komentar.getUporabnisko_ime());
+                        usernameTv.setTextSize(12);
+                        usernameTv.setTextColor(Color.GRAY);
+                        topRow.addView(usernameTv);
+
+                        // SPACER to push icons to right
+                        View spacer = new View(KosDetailActivity.this);
+                        LinearLayout.LayoutParams spacerParams =
+                                new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                        spacer.setLayoutParams(spacerParams);
+                        topRow.addView(spacer);
+
+                        // ICONS (only for owner)
                         if (komentar.getUporabnisko_ime().equals(currentUsername)) {
+                            LinearLayout iconsRow = new LinearLayout(KosDetailActivity.this);
+                            iconsRow.setOrientation(LinearLayout.HORIZONTAL);
 
-                            // DELETE
-                            Button deleteBtn = new Button(KosDetailActivity.this);
-                            deleteBtn.setText("X");
-                            deleteBtn.setOnClickListener(v ->
-                                    deleteKomentar(komentar.getId()));
-                            commentLayout.addView(deleteBtn);
+                            int sizeDp = 18;
+                            float scale = getResources().getDisplayMetrics().density;
+                            int sizePx = (int) (sizeDp * scale + 0.5f);
 
-                            // EDIT
-                            Button editBtn = new Button(KosDetailActivity.this);
-                            editBtn.setText("Edit");
-                            editBtn.setOnClickListener(v ->
-                                    enterEditMode(komentar));
-                            commentLayout.addView(editBtn);
+                            // EDIT ICON (pen)
+                            ImageView editIcon = new ImageView(KosDetailActivity.this);
+                            editIcon.setImageResource(R.drawable.pen);
+                            LinearLayout.LayoutParams editParams =
+                                    new LinearLayout.LayoutParams(sizePx, sizePx);
+                            editParams.setMargins(0, 0, 24, 0); // margin between icons
+                            editIcon.setLayoutParams(editParams);
+                            editIcon.setOnClickListener(v -> enterEditMode(komentar));
+
+                            // DELETE ICON (X)
+                            ImageView deleteIcon = new ImageView(KosDetailActivity.this);
+                            deleteIcon.setImageResource(R.drawable.delete_icon);
+                            LinearLayout.LayoutParams deleteParams =
+                                    new LinearLayout.LayoutParams(sizePx, sizePx);
+                            deleteIcon.setLayoutParams(deleteParams);
+                            deleteIcon.setOnClickListener(v -> deleteKomentar(komentar.getId()));
+
+                            iconsRow.addView(editIcon);
+                            iconsRow.addView(deleteIcon);
+
+                            topRow.addView(iconsRow);
                         }
 
-                        commentsContainer.addView(commentLayout);
+
+                        // --- COMMENT TEXT ---
+                        TextView commentTv = new TextView(KosDetailActivity.this);
+                        String text = komentar.getBesedilo();
+                        if (text == null) text = ""; // replace null with empty string
+                        commentTv.setText(text.trim());
+                        commentTv.setTextSize(16);
+                        commentTv.setPadding(0, 12, 0, 0);
+                        commentTv.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        ));
+
+                        mainRow.addView(topRow);
+                        mainRow.addView(commentTv);
+                        card.addView(mainRow);
+                        commentsContainer.addView(card);
                     }
+
                 } else {
                     Log.e("COMMENT_ERROR", "Code: " + response.code());
                 }
