@@ -26,20 +26,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:paddingTop="24dp">
+            android:paddingTop="5dp"
+            android:paddingBottom="30dp">
 
             <Button
                 android:id="@+id/cancelButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Prekliči" />
+                android:text="Prekliči"
+                android:backgroundTint="@color/siva_hover"/>
 
             <Button
                 android:id="@+id/applyButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Filtriraj"
-                android:layout_marginStart="16dp"/>
+                android:layout_marginStart="10dp"
+                android:backgroundTint="@color/gumbi"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

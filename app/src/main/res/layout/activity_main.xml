@@ -78,7 +78,7 @@
                 android:text="Počisti filtre"
                 android:visibility="gone"
                 android:layout_marginStart="8dp"
-                android:backgroundTint="@color/gumbi"/>
+                android:backgroundTint="@color/siva_hover"/>
         </LinearLayout>
     </LinearLayout>
 
