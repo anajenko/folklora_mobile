@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
@@ -166,7 +168,8 @@ public class KosDetailActivity extends AppCompatActivity {
 
                     commentsContainer.removeAllViews();
 
-                    for (Komentar komentar : response.body()) {
+                    for (final Komentar komentar : response.body()) {
+                        final Komentar thisKomentar = komentar;
 
                         // --- CREATE CARD ---
                         com.google.android.material.card.MaterialCardView card =
@@ -232,7 +235,7 @@ public class KosDetailActivity extends AppCompatActivity {
                                     new LinearLayout.LayoutParams(sizePx, sizePx);
                             editParams.setMargins(0, 0, 24, 0); // margin between icons
                             editIcon.setLayoutParams(editParams);
-                            editIcon.setOnClickListener(v -> enterEditMode(komentar));
+                            editIcon.setOnClickListener(v -> enterEditMode(thisKomentar, card));
 
                             // DELETE ICON (X)
                             ImageView deleteIcon = new ImageView(KosDetailActivity.this);
@@ -244,7 +247,6 @@ public class KosDetailActivity extends AppCompatActivity {
 
                             iconsRow.addView(editIcon);
                             iconsRow.addView(deleteIcon);
-
                             topRow.addView(iconsRow);
                         }
 
@@ -317,32 +319,65 @@ public class KosDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void enterEditMode(Komentar komentar) {
+    private void enterEditMode(Komentar komentar, com.google.android.material.card.MaterialCardView card) {
 
-        commentsContainer.removeAllViews();
+        LinearLayout mainRow = (LinearLayout) card.getChildAt(0);
+        LinearLayout topRow = (LinearLayout) mainRow.getChildAt(0);
+        TextView commentTv = (TextView) mainRow.getChildAt(1);
 
-        LinearLayout editLayout = new LinearLayout(this);
-        editLayout.setOrientation(LinearLayout.VERTICAL);
+        // Hide old edit/delete icons (keep username and spacer)
+        for (int i = 0; i < topRow.getChildCount(); i++) {
+            View child = topRow.getChildAt(i);
+            if (child != topRow.getChildAt(0) && !(child.getLayoutParams() instanceof LinearLayout.LayoutParams &&
+                    ((LinearLayout.LayoutParams) child.getLayoutParams()).weight == 1f)) {
+                child.setVisibility(View.GONE);
+            }
+        }
 
+        // Replace comment TextView with EditText
         EditText editText = new EditText(this);
-        editText.setText(komentar.getBesedilo());
-        editLayout.addView(editText);
+        editText.setText(commentTv.getText());
+        editText.setTextSize(16);
+        editText.setPadding(0, 12, 0, 12);
+        editText.setLayoutParams(commentTv.getLayoutParams());
+        editText.setBackground(null); // no underline
+        mainRow.removeView(commentTv);
+        mainRow.addView(editText, 1);
 
-        Button saveBtn = new Button(this);
-        saveBtn.setText("Popravi komentar");
-        editLayout.addView(saveBtn);
+        // Create a check icon in top-right (replace X)
+        ImageView checkIcon = new ImageView(this);
+        checkIcon.setImageResource(R.drawable.save); // make sure you have a check icon drawable
+        int sizeDp = 18;
+        float scale = getResources().getDisplayMetrics().density;
+        int sizePx = (int) (sizeDp * scale + 0.5f);
+        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(sizePx, sizePx);
+        iconParams.setMargins(0, 0, 0, 0); // spacing from username if needed
+        checkIcon.setLayoutParams(iconParams);
 
-        saveBtn.setOnClickListener(v -> {
-            String updatedText = editText.getText().toString().trim();
-            if (!updatedText.isEmpty()) {
-                updateKomentar(komentar.getId(), updatedText);
+        // Add check icon to topRow
+        topRow.addView(checkIcon);
+
+        // Show keyboard
+        editText.post(() -> {
+            editText.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
             }
         });
 
-        commentsContainer.addView(editLayout);
+        // Handle click on check icon
+        checkIcon.setOnClickListener(v -> {
+            String updatedText = editText.getText().toString().trim();
+            if (!updatedText.isEmpty()) {
+                updateKomentarWithCheck(komentar, komentar.getId(), updatedText, editText, commentTv, topRow, checkIcon, card);
+            }
+        });
     }
 
-    private void updateKomentar(int komentarId, String updatedText) {
+    private void updateKomentar(int komentarId, String updatedText,
+                                EditText editText, Button saveBtn,
+                                TextView commentTv, LinearLayout topRow) {
 
         KomentarUpdateRequest request =
                 new KomentarUpdateRequest(updatedText, kosId);
@@ -353,7 +388,83 @@ public class KosDetailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
-                            loadKomentarji();
+                            // Replace EditText with TextView
+                            LinearLayout mainRow = (LinearLayout) editText.getParent();
+                            mainRow.removeView(editText);
+                            mainRow.removeView(saveBtn);
+
+                            commentTv.setText(updatedText);
+                            mainRow.addView(commentTv, 1); // add back at same position
+
+                            // Restore edit/delete icons
+                            if (topRow.getChildCount() > 2) {
+                                for (int i = 2; i < topRow.getChildCount(); i++) {
+                                    topRow.getChildAt(i).setVisibility(View.VISIBLE);
+                                }
+                            }
+
+                        } else {
+                            Log.e("UPDATE_ERROR", "Code: " + response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.e("UPDATE_ERROR", t.getMessage());
+                    }
+                });
+    }
+    private void updateKomentarWithCheck(Komentar komentar, int komentarId, String updatedText,
+                                         EditText editText, TextView commentTv,
+                                         LinearLayout topRow, ImageView checkIcon,
+                                         MaterialCardView card) {
+
+        KomentarUpdateRequest request = new KomentarUpdateRequest(updatedText, kosId);
+
+        apiService.updateKomentar(kosId, komentarId, request)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+
+                            // Replace EditText with original TextView
+                            LinearLayout mainRow = (LinearLayout) editText.getParent();
+                            mainRow.removeView(editText);
+
+                            commentTv.setText(updatedText);
+                            mainRow.addView(commentTv, 1);
+
+                            // Remove check icon
+                            topRow.removeView(checkIcon);
+
+                            // Restore edit/delete icons (for owner)
+                            LinearLayout iconsRow = new LinearLayout(KosDetailActivity.this);
+                            iconsRow.setOrientation(LinearLayout.HORIZONTAL);
+
+                            int sizeDp = 18;
+                            float scale = getResources().getDisplayMetrics().density;
+                            int sizePx = (int) (sizeDp * scale + 0.5f);
+
+// EDIT ICON
+                            ImageView editIcon = new ImageView(KosDetailActivity.this);
+                            editIcon.setImageResource(R.drawable.pen);
+                            LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(sizePx, sizePx);
+                            editParams.setMargins(0, 0, 24, 0);
+                            editIcon.setLayoutParams(editParams);
+                            editIcon.setOnClickListener(v -> enterEditMode(komentar, card));
+
+// DELETE ICON
+                            ImageView deleteIcon = new ImageView(KosDetailActivity.this);
+                            deleteIcon.setImageResource(R.drawable.delete_icon);
+                            deleteIcon.setLayoutParams(new LinearLayout.LayoutParams(sizePx, sizePx));
+                            deleteIcon.setOnClickListener(v -> deleteKomentar(komentarId));
+
+                            iconsRow.addView(editIcon);
+                            iconsRow.addView(deleteIcon);
+
+                            // Add iconsRow to topRow (after spacer)
+                            topRow.addView(iconsRow);
+
                         } else {
                             Log.e("UPDATE_ERROR", "Code: " + response.code());
                         }
