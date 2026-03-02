@@ -3,6 +3,7 @@ package si.uni_lj.fe.seminar.folkgarderoba;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -18,12 +19,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.card.MaterialCardView;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import retrofit2.Call;
@@ -334,13 +338,36 @@ public class KosDetailActivity extends AppCompatActivity {
             }
         }
 
-        // Replace comment TextView with EditText
-        EditText editText = new EditText(this);
+        ContextThemeWrapper contextWrapper = new ContextThemeWrapper(this, R.style.EditTextCursorColor);
+
+        EditText editText = new EditText(contextWrapper);
         editText.setText(commentTv.getText());
         editText.setTextSize(16);
         editText.setPadding(0, 12, 0, 12);
         editText.setLayoutParams(commentTv.getLayoutParams());
         editText.setBackground(null); // no underline
+
+// SAFELY set cursor color using reflection
+        try {
+            Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
+            f.setAccessible(true);
+            int drawableResId = f.getInt(editText);
+
+            Drawable cursorDrawable = AppCompatResources.getDrawable(this, drawableResId);
+            if (cursorDrawable != null) {
+                cursorDrawable.setTint(ContextCompat.getColor(this, R.color.headerfooter));
+                Drawable[] drawables = { cursorDrawable, cursorDrawable };
+                Field editorField = TextView.class.getDeclaredField("mEditor");
+                editorField.setAccessible(true);
+                Object editor = editorField.get(editText);
+                Field cursorField = editor.getClass().getDeclaredField("mCursorDrawable");
+                cursorField.setAccessible(true);
+                cursorField.set(editor, drawables);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         mainRow.removeView(commentTv);
         mainRow.addView(editText, 1);
 

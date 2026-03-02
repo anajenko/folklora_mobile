@@ -20,5 +20,8 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
+    <style name="EditTextCursorColor">
+        <item name="android:textCursorDrawable">@drawable/edittext_cursor_headerfooter</item>
+    </style>
 
 </resources>
