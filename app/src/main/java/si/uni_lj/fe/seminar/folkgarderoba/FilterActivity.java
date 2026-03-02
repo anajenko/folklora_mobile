@@ -2,7 +2,9 @@ package si.uni_lj.fe.seminar.folkgarderoba;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.CompoundButtonCompat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,6 +31,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Labela;
+
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.flexbox.JustifyContent;
 
 public class FilterActivity extends AppCompatActivity {
 
@@ -83,7 +91,6 @@ public class FilterActivity extends AppCompatActivity {
     }
 
     private void populateLabels(List<Labela> labels) {
-
         labelsContainer.removeAllViews();
 
         // Group by tip
@@ -104,44 +111,66 @@ public class FilterActivity extends AppCompatActivity {
         groupOrderMap.put("VELIKOST", "VELIKOST");
         groupOrderMap.put("DRUGO", "DRUGO");
 
-        Map<String, String> backendToDisplayKey = new HashMap<>();
-        for (String key : groupOrderMap.keySet()) {
-            backendToDisplayKey.put(key.toLowerCase(), key); // lowercase matching
-        }
-
         for (Map.Entry<String, String> entry : groupOrderMap.entrySet()) {
-            String key = entry.getKey();       // e.g., "TIP_OBLACILA"
-            String displayName = entry.getValue(); // e.g., "TIP OBLAČILA"
-
             String backendTip = null;
             for (String tip : grouped.keySet()) {
-                if (tip.equalsIgnoreCase(key)) {
+                if (tip.equalsIgnoreCase(entry.getKey())) {
                     backendTip = tip;
                     break;
                 }
             }
+            if (backendTip == null) continue;
 
-            // Section title
+            // 1️⃣ Section title
             TextView typeText = new TextView(this);
-            typeText.setText(displayName.toUpperCase());
+            typeText.setText(entry.getValue().toUpperCase());
             typeText.setTextSize(16);
-            typeText.setPadding(0, 32, 0, 8);
             typeText.setTypeface(null, Typeface.BOLD);
+            typeText.setPadding(0, 60, 0, 14); // space above and below
             labelsContainer.addView(typeText);
 
-            // Checkboxes
-            for (Labela label : grouped.get(backendTip)) {
+            // 2️⃣ FlexboxLayout for checkboxes (two columns)
+            FlexboxLayout groupFlex = new FlexboxLayout(this);
+            groupFlex.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            ));
+            groupFlex.setFlexDirection(FlexDirection.ROW);
+            groupFlex.setFlexWrap(FlexWrap.WRAP);
+            groupFlex.setJustifyContent(JustifyContent.FLEX_START);
 
+            for (Labela label : grouped.get(backendTip)) {
                 CheckBox cb = new CheckBox(this);
-                cb.setText(label.getNaziv());   // <-- naziv, not ime
-                // ✅ auto-check if already selected
+                cb.setButtonDrawable(R.drawable.custom_checkbox);
+                cb.setText(label.getNaziv());
+
+                // preselected
                 if (preselectedIds != null && preselectedIds.contains(label.getId())) {
                     cb.setChecked(true);
                 }
 
-                labelsContainer.addView(cb);
+                int color = getResources().getColor(R.color.headerfooter);
+                CompoundButtonCompat.setButtonTintList(cb, ColorStateList.valueOf(color));
+
+                // Layout params: half width → two columns
+                FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
+                        0,
+                        FlexboxLayout.LayoutParams.WRAP_CONTENT
+                );
+                int verticalMargin = (int) (1 * getResources().getDisplayMetrics().density + 0.5f);
+                int horizontalMargin = (int) (1 * getResources().getDisplayMetrics().density + 0.5f);
+                params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
+                params.setFlexBasisPercent(0.5f); // half width → two columns
+                params.setFlexGrow(1f);
+                params.setFlexShrink(1f);
+                cb.setLayoutParams(params);
+
+                groupFlex.addView(cb);
                 checkBoxMap.put(label.getId(), cb);
             }
+
+            // 3️⃣ Add this group's FlexboxLayout to the parent LinearLayout
+            labelsContainer.addView(groupFlex);
         }
     }
 
