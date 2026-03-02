@@ -59,7 +59,10 @@ public class FilterActivity extends AppCompatActivity {
         preselectedIds = getIntent().getIntegerArrayListExtra("selectedLabelIds");
         fetchLabels();
 
-        cancelButton.setOnClickListener(v -> finish());
+        cancelButton.setOnClickListener(v -> {
+            finish();
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        });
         applyButton.setOnClickListener(v -> applyFilters());
     }
 
@@ -191,6 +194,8 @@ public class FilterActivity extends AppCompatActivity {
         resultIntent.putStringArrayListExtra("selectedLabelNazivi", selectedNazivi);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
+
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 }
 

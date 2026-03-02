@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         // Če je že prijavljen, preskoči login
         if (token != null) {
             startActivity(new Intent(this, MainActivity.class));
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
             return;
         }
@@ -67,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Prijava uspešna!", Toast.LENGTH_SHORT).show();
 
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     finish();
 
                 } else {

@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         if (token == null) {
             // ni prijavljen
             startActivity(new Intent(this, LoginActivity.class));
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
             return;
         }
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
             layout.setOnClickListener(ll -> {
                 prefs.edit().clear().apply();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();
                 popup.dismiss();
             });
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, FilterActivity.class);
             intent.putIntegerArrayListExtra("selectedLabelIds", currentFilterIds);
             filterLauncher.launch(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
 
         clearFiltersButton.setOnClickListener(v -> {
@@ -257,19 +260,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        SharedPreferences prefs = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
-        String username = prefs.getString("username", "");
-
-        MenuItem userItem = menu.findItem(R.id.menu_user);
-        userItem.setTitle("Uporabnik: " + username);
-
-        return true;
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -279,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
             prefs.edit().clear().apply();
 
             startActivity(new Intent(this, LoginActivity.class));
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
             return true;
         }
