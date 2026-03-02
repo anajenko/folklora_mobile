@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="24dp"
+    android:padding="32dp"
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background">
 
     <TextView
-        android:text="Prijava"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"
+        android:text="Prijavi se v aplikacijo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:text="Garderoba FS Klobuk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="100dp"
+        android:textColor="@color/headerfooter"/>
 
     <EditText
         android:id="@+id/etUsername"
         android:hint="Uporabniško ime"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAlignment="center"/>
 
     <EditText
         android:id="@+id/etPassword"
@@ -28,13 +40,17 @@
         android:inputType="textPassword"
         android:layout_marginTop="12dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAlignment="center"/>
 
     <Button
         android:id="@+id/btnLogin"
         android:text="Prijava"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="100dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/gumbi"
+        app:cornerRadius="6dp"/>
 
 </LinearLayout>
