@@ -64,7 +64,31 @@ public class KosDetailActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Podrobnosti kosa");
+            int insetDp = 8;
+            float scale = getResources().getDisplayMetrics().density;
+            toolbar.setContentInsetStartWithNavigation((int) (insetDp * scale + 0.5f));
         }
+        // Ensure arrow is vertically centered after layout
+        toolbar.post(() -> {
+            View navButton = null;
+            TextView titleView = null;
+
+            for (int i = 0; i < toolbar.getChildCount(); i++) {
+                View child = toolbar.getChildAt(i);
+                if (child instanceof androidx.appcompat.widget.AppCompatImageButton) {
+                    navButton = child;
+                } else if (child instanceof TextView) {
+                    titleView = (TextView) child; // title text
+                }
+            }
+            if (navButton != null) {
+                navButton.setTranslationY(7f); // move arrow down
+            }
+            if (titleView != null) {
+                // move title closer to arrow (negative X moves it left)
+                titleView.setTranslationX(-30f); // tweak value until you like the spacing
+            }
+        });
 
         titleText = findViewById(R.id.detailTitle);
         imageView = findViewById(R.id.detailImage);

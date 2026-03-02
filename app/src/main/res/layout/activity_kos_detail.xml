@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/headerfooter"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        android:contentInsetStartWithNavigation="0dp" />
 
     <!-- ScrollView fixed: height=0dp + weight=1 + fillViewport -->
     <ScrollView
