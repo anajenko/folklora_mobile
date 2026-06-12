@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -78,7 +79,13 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Napaka povezave s strežnikom", Toast.LENGTH_SHORT).show();
+                Log.e("LOGIN_ERROR", "Login failed", t);
+
+                Toast.makeText(
+                        LoginActivity.this,
+                        t.getClass().getSimpleName() + ": " + t.getMessage(),
+                        Toast.LENGTH_LONG
+                ).show();
             }
         });
     }

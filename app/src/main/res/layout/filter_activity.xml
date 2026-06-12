@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Prekliči"
-                android:backgroundTint="@color/siva_hover"/>
+                android:backgroundTint="@color/temno_siva"/>
 
             <Button
                 android:id="@+id/applyButton"
