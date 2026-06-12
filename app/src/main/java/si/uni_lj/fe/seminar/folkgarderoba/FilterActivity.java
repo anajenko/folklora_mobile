@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,11 +47,18 @@ public class FilterActivity extends AppCompatActivity {
     private Map<Integer, CheckBox> checkBoxMap = new HashMap<>();
 
     private ArrayList<Integer> preselectedIds;
-
+    private boolean samoPoskodovani = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filter_activity);
+
+        Switch switchPoskodovano = findViewById(R.id.switchPoskodovano);
+        samoPoskodovani = getIntent().getBooleanExtra("poskodovano", false);
+        switchPoskodovano.setChecked(samoPoskodovani);
+        switchPoskodovano.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            samoPoskodovani = isChecked;
+        });
 
         labelsContainer = findViewById(R.id.labelsContainer);
         applyButton = findViewById(R.id.applyButton);
@@ -192,6 +200,7 @@ public class FilterActivity extends AppCompatActivity {
         Intent resultIntent = new Intent();
         resultIntent.putIntegerArrayListExtra("selectedLabelIds", selectedIds);
         resultIntent.putStringArrayListExtra("selectedLabelNazivi", selectedNazivi);
+        resultIntent.putExtra("poskodovano", samoPoskodovani);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
 

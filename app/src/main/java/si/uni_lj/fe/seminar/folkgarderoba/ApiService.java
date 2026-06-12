@@ -24,10 +24,10 @@ public interface ApiService {
     Call<LoginResponse> login(@Body LoginRequest request);
 
     @GET("api/kosi")
-    Call<List<Kos>> getKosi();
-
-    @GET("api/kosi")
-    Call<List<Kos>> getKosiFiltered(@Query("labels") String labels);
+    Call<List<Kos>> getKosi(
+            @Query("labels") String labels,
+            @Query("poskodovano") Boolean poskodovano
+    );
 
     @GET("api/kosi/{id}")
     Call<ResponseBody> getSlika(@Path("id") int id);

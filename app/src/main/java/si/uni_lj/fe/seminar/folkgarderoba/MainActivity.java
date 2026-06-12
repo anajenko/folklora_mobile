@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> filterLauncher;
     private TextView filterTitleText;
     private Button clearFiltersButton;
+
+    private boolean samoPoskodovani = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,8 +167,10 @@ public class MainActivity extends AppCompatActivity {
                                 .getIntegerArrayListExtra("selectedLabelIds");
                         currentFilterNazivi =
                                 result.getData().getStringArrayListExtra("selectedLabelNazivi");
+                        samoPoskodovani = result.getData()
+                                .getBooleanExtra("poskodovano", false);
                         updateFilterText();
-                        loadKosi(currentFilterIds);
+                        refreshKosi();
                     }
                 }
         );
@@ -187,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
             updateFilterText();
 
             // Reload unfiltered list
-            loadKosi(null);
+            refreshKosi();
         });
 
         recyclerView = findViewById(R.id.recyclerView);
@@ -201,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
 
-        loadKosi(null);
+        refreshKosi();
         updateFilterText();
     }
 
@@ -218,21 +223,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-    private void loadKosi(@Nullable ArrayList<Integer> labelIds) {
+    private void loadKosi(@Nullable ArrayList<Integer> labelIds, @Nullable Boolean poskodovano) {
         ApiService apiService = RetrofitClient
                 .getRetrofitInstance(this) // pošlji aktualni Context
                 .create(ApiService.class);
 
-        Call<List<Kos>> call;
+        String labelsQuery = null;
 
         if (labelIds != null && !labelIds.isEmpty()) {
-            String labelsQuery = TextUtils.join(",", labelIds);
-            call = apiService.getKosiFiltered(labelsQuery);
-        } else {
-            call = apiService.getKosi();
+            labelsQuery = TextUtils.join(",", labelIds);
         }
+
+        Call<List<Kos>> call = apiService.getKosi(labelsQuery, poskodovano);
 
         call.enqueue(new Callback<List<Kos>>() {
             @Override
@@ -279,6 +281,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadKosi(currentFilterIds);
+        refreshKosi();
+    }
+
+    private void refreshKosi() {
+        loadKosi(
+                currentFilterIds,
+                samoPoskodovani ? true : null
+        );
     }
 }

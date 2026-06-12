@@ -20,13 +20,28 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginTop="16dp" />
+
+        <Switch
+            android:id="@+id/switchPoskodovano"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SAMO POŠKODOVANI KOSI"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            />
+
         <!-- Buttons -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:paddingTop="5dp"
+            android:paddingTop="15dp"
             android:paddingBottom="30dp">
 
             <Button
