@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -18,10 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.CompoundButtonCompat;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -87,7 +81,7 @@ public class FilterActivity extends AppCompatActivity {
                     populateLabels(response.body());
                 } else {
                     Toast.makeText(FilterActivity.this,
-                            "Napaka pri nalaganju label.",
+                            R.string.napaka_pri_nalaganju_label,
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -95,7 +89,7 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Labela>> call, Throwable t) {
                 Toast.makeText(FilterActivity.this,
-                        "Napaka pri nalaganju label.",
+                        R.string.napaka_pri_nalaganju_label,
                         Toast.LENGTH_SHORT).show();
             }
         });

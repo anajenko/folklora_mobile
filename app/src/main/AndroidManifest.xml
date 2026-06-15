@@ -20,7 +20,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".FilterActivity" />
         <activity android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="true"/>
         <activity android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>

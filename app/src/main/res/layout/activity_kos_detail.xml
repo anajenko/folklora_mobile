@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="POŠKODOVANO"
+                android:text="@string/poskodovano"
                 android:textColor="@android:color/holo_red_dark"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"
@@ -80,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Komentarji:"
+                android:text="@string/komentarji"
                 android:textStyle="bold"
                 android:textSize="14dp"/>
 
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Dodaj komentar"
+                android:text="@string/dodaj_komentar"
                 android:backgroundTint="@color/gumbi"/>
 
             <LinearLayout

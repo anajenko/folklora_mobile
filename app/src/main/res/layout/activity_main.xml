@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Garderoba FS KLOBUK"
+            android:text="@string/header"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             android:textSize="20sp"/>
@@ -68,14 +68,14 @@
                 android:id="@+id/chooseFiltersButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Izberi filtre"
+                android:text="@string/izberi_filtre"
                 android:backgroundTint="@color/gumbi"/>
 
             <Button
                 android:id="@+id/clearFiltersButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Počisti filtre"
+                android:text="@string/pocisti_filtre"
                 android:visibility="gone"
                 android:layout_marginStart="8dp"
                 android:backgroundTint="@color/siva_hover"/>

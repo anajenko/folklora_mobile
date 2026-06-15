@@ -4,4 +4,19 @@
     <string name="vse">/</string>
     <string name="izberi_filtre">Izberi filtre</string>
     <string name="footer">© Folklora APP</string>
+    <string name="header">Garderoba FS KLOBUK</string>
+    <string name="pocisti_filtre">Počisti filtre</string>
+    <string name="poskodovano">POŠKODOVANO</string>
+    <string name="preklici">Prekliči</string>
+    <string name="filtriraj">Filtriraj</string>
+    <string name="samo_poskodovani_kosi">SAMO POŠKODOVANI KOSI</string>
+    <string name="komentarji">Komentarji:</string>
+    <string name="naziv_kosa">Naziv kosa</string>
+    <string name="dodaj_komentar">Dodaj komentar</string>
+    <string name="tekst_prijava">Prijavi se v aplikacijo</string>
+    <string name="prijava">Prijava</string>
+    <string name="napaka_pri_nalaganju_label">Napaka pri nalaganju label.</string>
+    <string name="prijava_uspesna">Prijava uspešna!</string>
+    <string name="napacno_uporabnisko_imegeslo">Napačno uporabniško ime ali geslo</string>
+    <string name="napaka_pri_nalaganju_kosov">Napaka pri nalaganju kosov</string>
 </resources>

@@ -1,8 +1,6 @@
 package si.uni_lj.fe.seminar.folkgarderoba;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,18 +8,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +27,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -247,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(MainActivity.this,
-                            "Napaka pri nalaganju kosov",
+                            R.string.napaka_pri_nalaganju_kosov,
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -256,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<List<Kos>> call, Throwable t) {
                 Log.e("MainActivity", "API ERROR", t);
                 Toast.makeText(MainActivity.this,
-                        "Napaka pri nalaganju kosov",
+                        R.string.napaka_pri_nalaganju_kosov,
                         Toast.LENGTH_SHORT).show();
             }
         });

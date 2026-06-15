@@ -3,11 +3,9 @@ package si.uni_lj.fe.seminar.folkgarderoba;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,14 +64,14 @@ public class LoginActivity extends AppCompatActivity {
                             .putString("username", response.body().getUporabnisko_ime())
                             .apply();
 
-                    Toast.makeText(LoginActivity.this, "Prijava uspešna!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, R.string.prijava_uspesna, Toast.LENGTH_SHORT).show();
 
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     finish();
 
                 } else {
-                    Toast.makeText(LoginActivity.this, "Napačno uporabniško ime ali geslo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, R.string.napacno_uporabnisko_imegeslo, Toast.LENGTH_SHORT).show();
                 }
             }
 

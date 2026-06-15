@@ -30,7 +30,7 @@
             android:id="@+id/switchPoskodovano"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SAMO POŠKODOVANI KOSI"
+            android:text="@string/samo_poskodovani_kosi"
             android:layout_marginTop="16dp"
             android:layout_gravity="center_horizontal"
             />
@@ -48,14 +48,14 @@
                 android:id="@+id/cancelButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Prekliči"
+                android:text="@string/preklici"
                 android:backgroundTint="@color/temno_siva"/>
 
             <Button
                 android:id="@+id/applyButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Filtriraj"
+                android:text="@string/filtriraj"
                 android:layout_marginStart="10dp"
                 android:backgroundTint="@color/gumbi"/>
         </LinearLayout>

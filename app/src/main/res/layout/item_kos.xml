@@ -24,7 +24,7 @@
                 android:id="@+id/textViewNaziv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Naziv kosa"
+                android:text="@string/naziv_kosa"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"

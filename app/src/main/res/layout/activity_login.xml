@@ -10,14 +10,14 @@
     android:background="@color/app_background">
 
     <TextView
-        android:text="Prijavi se v aplikacijo"
+        android:text="@string/tekst_prijava"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:gravity="center"/>
 
     <TextView
-        android:text="Garderoba FS Klobuk"
+        android:text="@string/header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="26sp"
@@ -46,7 +46,7 @@
 
     <Button
         android:id="@+id/btnLogin"
-        android:text="Prijava"
+        android:text="@string/prijava"
         android:layout_marginTop="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

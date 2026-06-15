@@ -29,9 +29,6 @@ public interface ApiService {
             @Query("poskodovano") Boolean poskodovano
     );
 
-    @GET("api/kosi/{id}")
-    Call<ResponseBody> getSlika(@Path("id") int id);
-
     @PUT("api/kosi/{id}")
     Call<Void> updatePoskodovano(@Path("id") int id,
                                  @Body KosUpdateRequest request);
@@ -45,12 +42,6 @@ public interface ApiService {
     // KOMENTARJI:
     @GET("api/kosi/{kosId}/komentarji")
     Call<List<Komentar>> getKomentarjiZaKos(@Path("kosId") int kosId);
-
-    @GET("api/kosi/{kosId}/komentarji/{id}")
-    Call<Komentar> getKomentar(
-            @Path("kosId") int kosId,
-            @Path("id") int id
-    );
 
     @PUT("api/kosi/{kosId}/komentarji/{id}")
     Call<Void> updateKomentar(
