@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         String token = prefs.getString("token", null);
 
         if (token == null) {
-            // ni prijavljen
             startActivity(new Intent(this, LoginActivity.class));
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();

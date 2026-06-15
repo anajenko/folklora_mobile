@@ -24,17 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences prefs = getSharedPreferences("APP_PREFS", MODE_PRIVATE);
-        String token = prefs.getString("token", null);
-
-        // Če je že prijavljen, preskoči login
-        if (token != null) {
-            startActivity(new Intent(this, MainActivity.class));
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            finish();
-            return;
-        }
-
         setContentView(R.layout.activity_login);
 
         etUsername = findViewById(R.id.etUsername);
