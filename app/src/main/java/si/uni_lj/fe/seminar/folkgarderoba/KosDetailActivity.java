@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -26,7 +25,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
-import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.flexbox.AlignItems;
@@ -58,6 +56,7 @@ public class KosDetailActivity extends AppCompatActivity {
     private EditText newCommentEditText;
 
     private boolean isUpdatingSwitch = false;
+    private int poskodovano = 0;
 
 
     @Override
@@ -126,22 +125,24 @@ public class KosDetailActivity extends AppCompatActivity {
 
         kosId = getIntent().getIntExtra("kosId", -1);
         String kosIme = getIntent().getStringExtra("kosIme");
-        boolean poskodovano = getIntent().getBooleanExtra("poskodovano", false);
 
         titleText.setText(kosIme);
 
-        poskodovanoSwitch.setChecked(poskodovano);
-        updatePoskodovanoUI(poskodovano);
+        poskodovanoSwitch.setChecked(poskodovano == 1);
+        updatePoskodovanoUI(poskodovano == 1);
         poskodovanoSwitch.setVisibility(View.VISIBLE);
 
         poskodovanoSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
             if (isUpdatingSwitch) return;
 
+            int oldValue = poskodovano;
+            poskodovano = isChecked ? 1 : 0;
+
             updatePoskodovanoUI(isChecked);
 
             // Optional: disable the switch temporarily to prevent double tap
-            KosUpdateRequest request = new KosUpdateRequest(isChecked);
+            KosUpdateRequest request = new KosUpdateRequest(poskodovano);
             // Call your API to update
             apiService.updatePoskodovano(
                     kosId,
@@ -156,6 +157,7 @@ public class KosDetailActivity extends AppCompatActivity {
                         // Failed — revert
                         poskodovanoSwitch.setChecked(!isChecked);
                         updatePoskodovanoUI(!isChecked);
+                        poskodovano = isChecked ? 0 : 1;
                         isUpdatingSwitch = false;
                     }
                 }
@@ -165,6 +167,7 @@ public class KosDetailActivity extends AppCompatActivity {
                     isUpdatingSwitch = true;
                     poskodovanoSwitch.setChecked(!isChecked);
                     updatePoskodovanoUI(!isChecked);
+                    poskodovano = isChecked ? 0 : 1;
                     isUpdatingSwitch = false;
                 }
             });

@@ -1,6 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -16,7 +17,6 @@
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         android:contentInsetStartWithNavigation="0dp" />
 
-    <!-- ScrollView fixed: height=0dp + weight=1 + fillViewport -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -62,10 +62,10 @@
                 android:textColor="@android:color/holo_red_dark"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <!-- Labele -->
-
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/labelsContainer"
                 android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                     android:id="@+id/newCommentEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Vnesi komentar in pritisni spodnji gumb"
+                    android:hint="@string/vnesi_komentar"
                     android:inputType="textCapSentences|textMultiLine"
                     android:minLines="1"
                     android:maxLines="3"

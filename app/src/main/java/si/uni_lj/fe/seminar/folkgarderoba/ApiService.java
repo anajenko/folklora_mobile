@@ -24,8 +24,8 @@ public interface ApiService {
     @GET("api/kosi")
     Call<List<Kos>> getKosi(
             @Query("labels") String labels,
-            @Query("poskodovano") Boolean poskodovano
-    );
+            @Query("poskodovano") Integer poskodovano
+    ); //filtrirano
 
     @PUT("api/kosi/{id}")
     Call<Void> updatePoskodovano(@Path("id") int id,

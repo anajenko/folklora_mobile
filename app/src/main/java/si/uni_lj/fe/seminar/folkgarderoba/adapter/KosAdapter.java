@@ -1,7 +1,5 @@
 package si.uni_lj.fe.seminar.folkgarderoba.adapter;
 
-import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
-import si.uni_lj.fe.seminar.folkgarderoba.ApiService;
 import si.uni_lj.fe.seminar.folkgarderoba.R;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Kos;
 import si.uni_lj.fe.seminar.folkgarderoba.RetrofitClient;
@@ -26,7 +23,6 @@ public class KosAdapter extends RecyclerView.Adapter<KosAdapter.KosViewHolder> {
     private List<Kos> kosList;
     private OnItemClickListener listener;
 
-    // Click listener interface
     public interface OnItemClickListener {
         void onItemClick(Kos kos);
     }
@@ -49,30 +45,24 @@ public class KosAdapter extends RecyclerView.Adapter<KosAdapter.KosViewHolder> {
 
         Kos kos = kosList.get(position);
 
-        // Nastavi naslov
-        holder.textViewNaziv.setText(kos.getIme());
+        holder.textViewNaziv.setText(kos.getIme());// Nastavi naslov
 
-        // URL slike
-        String imageUrl = RetrofitClient.BASE_URL + "api/kosi/" + kos.getId();
+        String imageUrl = RetrofitClient.BASE_URL + "api/kosi/" + kos.getId(); // URL slike
 
         Glide.with(holder.itemView.getContext())
                 .load(imageUrl)
                 .into(holder.imageViewKos);
 
         MaterialCardView card = (MaterialCardView) holder.itemView;
+
         // Prikaz ikone poškodbe
-        // Če imaš int (0 ali 1):
         if (kos.isPoskodovano()) {
             holder.imageViewPoskodba.setVisibility(View.VISIBLE);
-            // Set background color while keeping rounded corners
             card.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.poskodovano_bg));
-
-            // Set border (stroke)
             card.setStrokeWidth(4);
             card.setStrokeColor(holder.itemView.getContext().getResources().getColor(R.color.poskodovano_border));
         } else {
             holder.imageViewPoskodba.setVisibility(View.GONE);
-            // Reset to default card background and remove border
             card.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(android.R.color.white));
             card.setStrokeWidth(0);
         }

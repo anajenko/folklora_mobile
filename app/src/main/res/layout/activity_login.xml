@@ -28,7 +28,7 @@
 
     <EditText
         android:id="@+id/etUsername"
-        android:hint="Uporabniško ime"
+        android:hint="@string/uporabnisko_ime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -36,7 +36,7 @@
 
     <EditText
         android:id="@+id/etPassword"
-        android:hint="Geslo"
+        android:hint="@string/geslo"
         android:inputType="textPassword"
         android:layout_marginTop="12dp"
         android:layout_width="match_parent"

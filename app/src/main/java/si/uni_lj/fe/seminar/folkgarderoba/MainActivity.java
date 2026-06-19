@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView filterTitleText;
     private Button clearFiltersButton;
 
-    private boolean samoPoskodovani = false;
+    private int samoPoskodovani = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                         currentFilterNazivi =
                                 result.getData().getStringArrayListExtra("selectedLabelNazivi");
                         samoPoskodovani = result.getData()
-                                .getBooleanExtra("poskodovano", false);
+                                .getIntExtra("samoPoskodovani", 0);
                         updateFilterText();
                         refreshKosi();
                     }
@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         chooseFiltersButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, FilterActivity.class);
             intent.putIntegerArrayListExtra("selectedLabelIds", currentFilterIds);
+            intent.putExtra("samoPoskodovani", samoPoskodovani);
             filterLauncher.launch(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
@@ -178,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
             // Clear selected filters
             currentFilterIds.clear();
             currentFilterNazivi.clear();
+            samoPoskodovani = 0;
 
             // Update filter text + buttons
             updateFilterText();
@@ -202,19 +204,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateFilterText() {
-        if (currentFilterIds == null || currentFilterIds.isEmpty()) {
+        if ((currentFilterIds == null || currentFilterIds.isEmpty())
+                && samoPoskodovani == 0) {
+
             filterTitleText.setVisibility(View.GONE);
             selectedLabelsText.setVisibility(View.GONE);
-            clearFiltersButton.setVisibility(View.GONE);   // hide clear button
+            clearFiltersButton.setVisibility(View.GONE);
+
         } else {
             filterTitleText.setVisibility(View.VISIBLE);
             selectedLabelsText.setVisibility(View.VISIBLE);
-            clearFiltersButton.setVisibility(View.VISIBLE); // show clear button
-            selectedLabelsText.setText(String.join(", ", currentFilterNazivi));
+            clearFiltersButton.setVisibility(View.VISIBLE);
+
+            if (currentFilterNazivi != null && !currentFilterNazivi.isEmpty()) {
+                selectedLabelsText.setText(String.join(", ", currentFilterNazivi));
+            } else {
+                selectedLabelsText.setText("Samo poškodovani");
+            }
         }
     }
 
-    private void loadKosi(@Nullable ArrayList<Integer> labelIds, @Nullable Boolean poskodovano) {
+    private void loadKosi(@Nullable ArrayList<Integer> labelIds, @Nullable Integer poskodovano) {
         ApiService apiService = RetrofitClient
                 .getRetrofitInstance(this) // pošlji aktualni Context
                 .create(ApiService.class);
@@ -276,9 +286,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshKosi() {
-        loadKosi(
-                currentFilterIds,
-                samoPoskodovani ? true : null
-        );
+        Integer poskodovanoFilter = null;
+
+        if (samoPoskodovani == 1) {
+            poskodovanoFilter = 1;
+        }
+
+        loadKosi(currentFilterIds, poskodovanoFilter);
     }
 }

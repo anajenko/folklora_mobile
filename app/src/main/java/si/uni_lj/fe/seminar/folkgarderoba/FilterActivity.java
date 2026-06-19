@@ -1,5 +1,6 @@
 package si.uni_lj.fe.seminar.folkgarderoba;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -41,17 +42,17 @@ public class FilterActivity extends AppCompatActivity {
     private Map<Integer, CheckBox> checkBoxMap = new HashMap<>();
 
     private ArrayList<Integer> preselectedIds;
-    private boolean samoPoskodovani = false;
+    private int samoPoskodovani = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filter_activity);
 
-        Switch switchPoskodovano = findViewById(R.id.switchPoskodovano);
-        samoPoskodovani = getIntent().getBooleanExtra("poskodovano", false);
-        switchPoskodovano.setChecked(samoPoskodovani);
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch switchPoskodovano = findViewById(R.id.switchPoskodovano);
+        samoPoskodovani = getIntent().getIntExtra("samoPoskodovani", 0);
+        switchPoskodovano.setChecked(samoPoskodovani == 1);
         switchPoskodovano.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            samoPoskodovani = isChecked;
+            samoPoskodovani = isChecked ? 1 : 0;
         });
 
         labelsContainer = findViewById(R.id.labelsContainer);
@@ -108,7 +109,7 @@ public class FilterActivity extends AppCompatActivity {
             grouped.get(tip).add(label);
         }
 
-        // 2️⃣ Define the display order and nice names
+        // vrstni red in prikaz
         Map<String, String> groupOrderMap = new LinkedHashMap<>();
         groupOrderMap.put("POKRAJINA", "POKRAJINA");
         groupOrderMap.put("TIP_OBLACILA", "TIP OBLAČILA");
@@ -126,7 +127,6 @@ public class FilterActivity extends AppCompatActivity {
             }
             if (backendTip == null) continue;
 
-            // 1️⃣ Section title
             TextView typeText = new TextView(this);
             typeText.setText(entry.getValue().toUpperCase());
             typeText.setTextSize(16);
@@ -134,7 +134,7 @@ public class FilterActivity extends AppCompatActivity {
             typeText.setPadding(0, 60, 0, 14); // space above and below
             labelsContainer.addView(typeText);
 
-            // 2️⃣ FlexboxLayout for checkboxes (two columns)
+
             FlexboxLayout groupFlex = new FlexboxLayout(this);
             groupFlex.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -157,7 +157,6 @@ public class FilterActivity extends AppCompatActivity {
                 int color = getResources().getColor(R.color.headerfooter);
                 CompoundButtonCompat.setButtonTintList(cb, ColorStateList.valueOf(color));
 
-                // Layout params: half width → two columns
                 FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
                         0,
                         FlexboxLayout.LayoutParams.WRAP_CONTENT
@@ -173,8 +172,6 @@ public class FilterActivity extends AppCompatActivity {
                 groupFlex.addView(cb);
                 checkBoxMap.put(label.getId(), cb);
             }
-
-            // 3️⃣ Add this group's FlexboxLayout to the parent LinearLayout
             labelsContainer.addView(groupFlex);
         }
     }
@@ -194,7 +191,7 @@ public class FilterActivity extends AppCompatActivity {
         Intent resultIntent = new Intent();
         resultIntent.putIntegerArrayListExtra("selectedLabelIds", selectedIds);
         resultIntent.putStringArrayListExtra("selectedLabelNazivi", selectedNazivi);
-        resultIntent.putExtra("poskodovano", samoPoskodovani);
+        resultIntent.putExtra("samoPoskodovani", samoPoskodovani);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();
 

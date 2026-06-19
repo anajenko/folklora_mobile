@@ -2,14 +2,14 @@ package si.uni_lj.fe.seminar.folkgarderoba.model;
 
 public class KosUpdateRequest {
 
-    private Boolean poskodovano;
+    private int poskodovano;
     private String ime;
 
-    public KosUpdateRequest(Boolean poskodovano) {
+    public KosUpdateRequest(int poskodovano) {
         this.poskodovano = poskodovano;
     }
 
-    public Boolean getPoskodovano() {
+    public int getPoskodovano() {
         return poskodovano;
     }
 

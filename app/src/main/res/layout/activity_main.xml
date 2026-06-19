@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,17 +22,17 @@
             android:text="@string/header"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/menuButton"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end"
-            android:contentDescription="Menu"
+            android:contentDescription="@string/menu"
             android:layout_marginEnd="16dp"
             android:src="@drawable/outline_account_circle_24"
-            android:tint="@android:color/white"/>
+            app:tint="@android:color/white" />
 
     </androidx.appcompat.widget.Toolbar>
 

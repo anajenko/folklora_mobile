@@ -3,7 +3,7 @@
     <string name="filtrirano_po">Filtrirano po:</string>
     <string name="vse">/</string>
     <string name="izberi_filtre">Izberi filtre</string>
-    <string name="footer">© Folklora APP</string>
+    <string name="footer">Folklora APP</string>
     <string name="header">Garderoba FS KLOBUK</string>
     <string name="pocisti_filtre">Počisti filtre</string>
     <string name="poskodovano">POŠKODOVANO</string>
@@ -19,4 +19,8 @@
     <string name="prijava_uspesna">Prijava uspešna!</string>
     <string name="napacno_uporabnisko_imegeslo">Napačno uporabniško ime ali geslo</string>
     <string name="napaka_pri_nalaganju_kosov">Napaka pri nalaganju kosov</string>
+    <string name="vnesi_komentar">Vnesi komentar in pritisni spodnji gumb</string>
+    <string name="uporabnisko_ime">Uporabniško ime</string>
+    <string name="geslo">Geslo</string>
+    <string name="menu">Menu</string>
 </resources>
