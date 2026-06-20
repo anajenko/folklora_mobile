@@ -5,7 +5,7 @@
     <string name="izberi_filtre">Izberi filtre</string>
     <string name="footer">Folklora APP</string>
     <string name="header">Garderoba FS KLOBUK</string>
-    <string name="pocisti_filtre">Počisti filtre</string>
+    <string name="pocisti_filtre"><u>Počisti filtre</u></string>
     <string name="poskodovano">POŠKODOVANO</string>
     <string name="preklici">Prekliči</string>
     <string name="filtriraj">Filtriraj</string>

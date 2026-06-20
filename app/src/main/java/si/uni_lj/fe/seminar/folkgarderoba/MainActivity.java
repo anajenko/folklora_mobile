@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> currentFilterNazivi = new ArrayList<>();
     private ActivityResultLauncher<Intent> filterLauncher;
     private TextView filterTitleText;
-    private Button clearFiltersButton;
+    private TextView clearFiltersButton;
 
     private int samoPoskodovani = 0;
 

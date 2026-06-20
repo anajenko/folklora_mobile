@@ -488,7 +488,7 @@ public class KosDetailActivity extends AppCompatActivity {
             poskodovanoSwitch.setText("JE POŠKODOVANO!");
             poskodovanoSwitch.setTypeface(null, android.graphics.Typeface.BOLD);
         } else {
-            poskodovanoSwitch.setText("ni poškodovano");
+            poskodovanoSwitch.setText("Ni poškodovano");
             poskodovanoSwitch.setTypeface(null, android.graphics.Typeface.NORMAL);
         }
 
