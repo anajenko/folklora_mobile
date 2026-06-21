@@ -16,14 +16,8 @@ public class Kos {
     @SerializedName("poskodovano")
     private int poskodovano;
 
-    // getterji in setterji
     public int getId() { return id; }
     public String getIme() { return ime; }
     public String getTip() { return tip; }
     public int getPoskodovano() { return poskodovano; }
-
-    public void setId(int id) { this.id = id; }
-    public void setIme(String ime) { this.ime = ime; }
-    public void setTip(String tip) { this.tip = tip; }
-    public void setPoskodovano(int poskodovano) { this.poskodovano = poskodovano; }
 }

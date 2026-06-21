@@ -14,22 +14,14 @@ public class Komentar {
     private String besedilo;
 
     @SerializedName("uporabnik_id")
-    private int uporabnikId; // <-- ADD THIS
+    private int uporabnikId;
 
     @SerializedName("uporabnisko_ime")
     private String uporabnisko_ime;
 
     public int getId() { return id; }
 
-    public int getKosId() { return kosId; }
-
     public String getBesedilo() { return besedilo; }
 
-    public int getUporabnikId() { return uporabnikId; } // <-- ADD THIS
-
     public String getUporabnisko_ime() { return uporabnisko_ime; }
-
-    public void setBesedilo(String besedilo) {
-        this.besedilo = besedilo;
-    }
 }

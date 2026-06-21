@@ -480,7 +480,6 @@ public class KosDetailActivity extends AppCompatActivity {
 
         int color = isPoskodovano ? activeColor : inactiveColor;
 
-
         // Update text and style
         if (isPoskodovano) {
             poskodovanoSwitch.setText("JE POŠKODOVANO!");

@@ -7,7 +7,7 @@ public class Labela {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("naziv")   // must match backend JSON
+    @SerializedName("naziv")
     private String naziv;
 
     @SerializedName("tip")

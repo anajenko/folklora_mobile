@@ -6,12 +6,4 @@ public class KomentarCreateRequest {
     public KomentarCreateRequest(String besedilo) {
         this.besedilo = besedilo;
     }
-
-    public String getBesedilo() {
-        return besedilo;
-    }
-
-    public void setBesedilo(String besedilo) {
-        this.besedilo = besedilo;
-    }
 }
