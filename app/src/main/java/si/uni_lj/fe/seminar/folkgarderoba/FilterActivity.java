@@ -28,11 +28,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import si.uni_lj.fe.seminar.folkgarderoba.model.Labela;
 
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayout;
-import com.google.android.flexbox.JustifyContent;
-
 public class FilterActivity extends AppCompatActivity {
 
     private LinearLayout labelsContainer;
@@ -98,6 +93,7 @@ public class FilterActivity extends AppCompatActivity {
 
     private void populateLabels(List<Labela> labels) {
         labelsContainer.removeAllViews();
+        checkBoxMap.clear();
 
         // Group by tip
         Map<String, List<Labela>> grouped = new HashMap<>();
@@ -125,6 +121,7 @@ public class FilterActivity extends AppCompatActivity {
                     break;
                 }
             }
+
             if (backendTip == null) continue;
 
             TextView typeText = new TextView(this);
@@ -135,14 +132,12 @@ public class FilterActivity extends AppCompatActivity {
             labelsContainer.addView(typeText);
 
 
-            FlexboxLayout groupFlex = new FlexboxLayout(this);
-            groupFlex.setLayoutParams(new LinearLayout.LayoutParams(
+            LinearLayout groupLayout = new LinearLayout(this);
+            groupLayout.setOrientation(LinearLayout.VERTICAL);
+            groupLayout.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             ));
-            groupFlex.setFlexDirection(FlexDirection.ROW);
-            groupFlex.setFlexWrap(FlexWrap.WRAP);
-            groupFlex.setJustifyContent(JustifyContent.FLEX_START);
 
             for (Labela label : grouped.get(backendTip)) {
                 CheckBox cb = new CheckBox(this);
@@ -157,22 +152,19 @@ public class FilterActivity extends AppCompatActivity {
                 int color = getResources().getColor(R.color.headerfooter);
                 CompoundButtonCompat.setButtonTintList(cb, ColorStateList.valueOf(color));
 
-                FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
-                        0,
-                        FlexboxLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
                 );
+
                 int verticalMargin = (int) (1 * getResources().getDisplayMetrics().density + 0.5f);
-                int horizontalMargin = (int) (1 * getResources().getDisplayMetrics().density + 0.5f);
-                params.setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin);
-                params.setFlexBasisPercent(0.5f); // half width → two columns
-                params.setFlexGrow(1f);
-                params.setFlexShrink(1f);
+                params.setMargins(0, verticalMargin, 0, verticalMargin);
                 cb.setLayoutParams(params);
 
-                groupFlex.addView(cb);
+                groupLayout.addView(cb);
                 checkBoxMap.put(label.getId(), cb);
             }
-            labelsContainer.addView(groupFlex);
+            labelsContainer.addView(groupLayout);
         }
     }
 
