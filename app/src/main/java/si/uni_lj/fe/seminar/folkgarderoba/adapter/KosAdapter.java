@@ -56,7 +56,7 @@ public class KosAdapter extends RecyclerView.Adapter<KosAdapter.KosViewHolder> {
         MaterialCardView card = (MaterialCardView) holder.itemView;
 
         // Prikaz ikone poškodbe
-        if (kos.isPoskodovano()) {
+        if (kos.getPoskodovano() == 1) {
             holder.imageViewPoskodba.setVisibility(View.VISIBLE);
             card.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.poskodovano_bg));
             card.setStrokeWidth(4);

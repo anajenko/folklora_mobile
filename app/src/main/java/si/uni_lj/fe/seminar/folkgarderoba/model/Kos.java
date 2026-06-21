@@ -20,7 +20,7 @@ public class Kos {
     public int getId() { return id; }
     public String getIme() { return ime; }
     public String getTip() { return tip; }
-    public boolean isPoskodovano() { return poskodovano != 0; }
+    public int getPoskodovano() { return poskodovano; }
 
     public void setId(int id) { this.id = id; }
     public void setIme(String ime) { this.ime = ime; }

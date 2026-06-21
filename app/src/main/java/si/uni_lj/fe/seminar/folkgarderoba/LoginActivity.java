@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
 
-        apiService = ApiClient.getClient(this).create(ApiService.class);
+        apiService = RetrofitClient.getRetrofitInstance(this).create(ApiService.class);
 
         btnLogin.setOnClickListener(v -> login());
     }

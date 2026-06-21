@@ -125,9 +125,11 @@ public class KosDetailActivity extends AppCompatActivity {
 
         kosId = getIntent().getIntExtra("kosId", -1);
         String kosIme = getIntent().getStringExtra("kosIme");
+        int initialPoskodovano = getIntent().getIntExtra("poskodovano", 0);
 
         titleText.setText(kosIme);
 
+        poskodovano =  initialPoskodovano;
         poskodovanoSwitch.setChecked(poskodovano == 1);
         updatePoskodovanoUI(poskodovano == 1);
         poskodovanoSwitch.setVisibility(View.VISIBLE);
@@ -178,10 +180,6 @@ public class KosDetailActivity extends AppCompatActivity {
 
         loadLabele();
         loadKomentarji();
-
-        ApiService apiService = RetrofitClient
-                .getRetrofitInstance(this)
-                .create(ApiService.class);
     }
 
     private void loadLabele() {

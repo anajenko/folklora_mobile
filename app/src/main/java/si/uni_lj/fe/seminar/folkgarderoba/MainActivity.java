@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, KosDetailActivity.class);
             intent.putExtra("kosId", kos.getId());
             intent.putExtra("kosIme", kos.getIme());
-            intent.putExtra("poskodovano", kos.isPoskodovano());
+            intent.putExtra("poskodovano", kos.getPoskodovano());
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);

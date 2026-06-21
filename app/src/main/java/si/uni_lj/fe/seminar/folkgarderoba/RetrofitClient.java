@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    public static final String BASE_URL = "http://192.168.0.34:3000/";
+    public static final String BASE_URL = "http://192.168.0.33:3000/";
 
     public static Retrofit getRetrofitInstance(Context context) {
         OkHttpClient client = new OkHttpClient.Builder()
